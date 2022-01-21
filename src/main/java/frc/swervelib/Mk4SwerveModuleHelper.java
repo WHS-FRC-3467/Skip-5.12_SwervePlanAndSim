@@ -1,6 +1,6 @@
 package frc.swervelib;
 
-import frc.robot.Constants.ROBOT;
+import frc.robot.Constants.RobotConstants;
 import frc.swervelib.ctre.*;
 import frc.swervelib.rev.NeoDriveControllerFactoryBuilder;
 import frc.swervelib.rev.NeoSteerConfiguration;
@@ -521,7 +521,7 @@ public final class Mk4SwerveModuleHelper {
                                    1 / modConfig.getDriveReduction(),
                                    1.1,
                                    0.8,
-                                   ROBOT.MASS_kg * 9.81 / QuadSwerveSim.NUM_MODULES, 
+                                   RobotConstants.MASS_kg * 9.81 / QuadSwerveSim.NUM_MODULES, 
                                    0.01, namePrefix
                                    );
     }

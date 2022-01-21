@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.drive;
 
 import frc.swervelib.Gyroscope;
 import frc.swervelib.GyroscopeHelper;
@@ -21,11 +21,11 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.simulation.PDPSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DRIVE;
+import frc.robot.Constants.DriveConstants;
 
 import java.util.ArrayList;
 
-public class DrivetrainSubsystem extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase {
   /**
    * The maximum voltage that will be delivered to the drive motors.
    * <p>
@@ -53,7 +53,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   // Here we calculate the theoretical maximum angular velocity. You can also replace this with a measured amount.
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
-          Math.hypot(DRIVE.TRACKWIDTH_METERS / 2.0, DRIVE.WHEELBASE_METERS / 2.0);
+          Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
   // These are our modules. We initialize them in the constructor.
   private final SwerveModule m_frontLeftModule;
@@ -68,7 +68,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   PDPSim pdp;
   public SwerveDrivetrainModel dt;
 
-  public DrivetrainSubsystem() {
+  public DriveSubsystem() {
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
     // There are 4 methods you can call to create your swerve modules.
@@ -99,13 +99,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
             // This can either be STANDARD or FAST depending on your gear configuration
             Mk3SwerveModuleHelper.GearRatio.FAST,
             // This is the ID of the drive motor
-            DRIVE.FRONT_LEFT_MODULE_DRIVE_MOTOR,
+            DriveConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
             // This is the ID of the steer motor
-            DRIVE.FRONT_LEFT_MODULE_STEER_MOTOR,
+            DriveConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
             // This is the ID of the steer encoder
-            DRIVE.FRONT_LEFT_MODULE_STEER_ENCODER,
+            DriveConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
             // This is how much the steer encoder is offset from true zero (In our case, zero is facing straight forward)
-            DRIVE.FRONT_LEFT_MODULE_STEER_OFFSET, "FL"
+            DriveConstants.FRONT_LEFT_MODULE_STEER_OFFSET, "FL"
     );
 
     // We will do the same for the other modules
@@ -114,10 +114,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     .withSize(2, 4)
                     .withPosition(2, 0),
             Mk3SwerveModuleHelper.GearRatio.FAST,
-            DRIVE.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-            DRIVE.FRONT_RIGHT_MODULE_STEER_MOTOR,
-            DRIVE.FRONT_RIGHT_MODULE_STEER_ENCODER,
-            DRIVE.FRONT_RIGHT_MODULE_STEER_OFFSET, "FR"
+            DriveConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
+            DriveConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
+            DriveConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
+            DriveConstants.FRONT_RIGHT_MODULE_STEER_OFFSET, "FR"
     );
 
     m_backLeftModule = Mk3SwerveModuleHelper.createFalcon500(
@@ -125,10 +125,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     .withSize(2, 4)
                     .withPosition(4, 0),
             Mk3SwerveModuleHelper.GearRatio.FAST,
-            DRIVE.BACK_LEFT_MODULE_DRIVE_MOTOR,
-            DRIVE.BACK_LEFT_MODULE_STEER_MOTOR,
-            DRIVE.BACK_LEFT_MODULE_STEER_ENCODER,
-            DRIVE.BACK_LEFT_MODULE_STEER_OFFSET, "BL"
+            DriveConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
+            DriveConstants.BACK_LEFT_MODULE_STEER_MOTOR,
+            DriveConstants.BACK_LEFT_MODULE_STEER_ENCODER,
+            DriveConstants.BACK_LEFT_MODULE_STEER_OFFSET, "BL"
     );
 
     m_backRightModule = Mk3SwerveModuleHelper.createFalcon500(
@@ -136,13 +136,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     .withSize(2, 4)
                     .withPosition(6, 0),
             Mk3SwerveModuleHelper.GearRatio.FAST,
-            DRIVE.BACK_RIGHT_MODULE_DRIVE_MOTOR,
-            DRIVE.BACK_RIGHT_MODULE_STEER_MOTOR,
-            DRIVE.BACK_RIGHT_MODULE_STEER_ENCODER,
-            DRIVE.BACK_RIGHT_MODULE_STEER_OFFSET, "BR"
+            DriveConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
+            DriveConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
+            DriveConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
+            DriveConstants.BACK_RIGHT_MODULE_STEER_OFFSET, "BR"
     );
 
-    Gyroscope gyro = GyroscopeHelper.createPigeonCAN(DRIVE.PIGEON_ID);
+    Gyroscope gyro = GyroscopeHelper.createPigeonCAN(DriveConstants.DRIVETRAIN_PIGEON_ID);
 
     modules.add(m_frontLeftModule);
     modules.add(m_frontRightModule);

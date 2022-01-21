@@ -18,17 +18,17 @@ import edu.wpi.first.wpilibj.Timer;
 //import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.AUTO;
-import frc.robot.Constants.DRIVE;
-import frc.robot.Constants.ROBOT;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.RobotConstants;
 import frc.robot.lib.SwerveControllerCommandPP;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.wpiClasses.QuadSwerveSim;
 import frc.wpiClasses.SwerveModuleSim;
 import frc.swervelib.AbsoluteEncoder;
 import frc.swervelib.DriveController;
 import frc.swervelib.Gyroscope;
-import frc.swervelib.Mk4SwerveModuleHelper;
+import frc.swervelib.Mk3SwerveModuleHelper;
 import frc.swervelib.PoseTelemetry;
 import frc.swervelib.SimConstants;
 import frc.swervelib.SteerController;
@@ -51,37 +51,37 @@ public class SwerveDrivetrainModel {
     PoseTelemetry dtPoseView;
 
     SwerveDrivePoseEstimator m_poseEstimator;
-    Pose2d curEstPose = new Pose2d(ROBOT.DFLT_START_POSE.getTranslation(), ROBOT.DFLT_START_POSE.getRotation());
+    Pose2d curEstPose = new Pose2d(RobotConstants.DFLT_START_POSE.getTranslation(), RobotConstants.DFLT_START_POSE.getRotation());
     Pose2d fieldPose = new Pose2d(); // Field-referenced orign
     boolean pointedDownfield = false;
     double curSpeed = 0;
     SwerveModuleState[] states;
     ProfiledPIDController thetaController =
         new ProfiledPIDController(
-            AUTO.kPThetaController, 0, 0, AUTO.kThetaControllerConstraints);
+            AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
 
     public SwerveDrivetrainModel(ArrayList<SwerveModule> realModules, Gyroscope gyro){
         this.gyro = gyro;
         this.realModules = realModules;
 
         if (RobotBase.isSimulation()) {
-            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(0), "FL"));
-            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(1), "FR"));
-            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(2), "BL"));
-            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(3), "BR"));
+            modules.add(Mk3SwerveModuleHelper.createSim(realModules.get(0), "FL"));
+            modules.add(Mk3SwerveModuleHelper.createSim(realModules.get(1), "FR"));
+            modules.add(Mk3SwerveModuleHelper.createSim(realModules.get(2), "BL"));
+            modules.add(Mk3SwerveModuleHelper.createSim(realModules.get(3), "BR"));
         }
         
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         field = PoseTelemetry.field;
-        field.setRobotPose(ROBOT.DFLT_START_POSE);
-        endPose = ROBOT.DFLT_START_POSE;
+        field.setRobotPose(RobotConstants.DFLT_START_POSE);
+        endPose = RobotConstants.DFLT_START_POSE;
         dtPoseView = new PoseTelemetry();
 
-        swerveDt = new QuadSwerveSim(DRIVE.TRACKWIDTH_METERS, 
-                                     DRIVE.TRACKWIDTH_METERS, 
-                                     ROBOT.MASS_kg, 
-                                     ROBOT.MOI_KGM2, 
+        swerveDt = new QuadSwerveSim(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS, 
+                                     DriveConstants.DRIVETRAIN_WHEELBASE_METERS, 
+                                     RobotConstants.MASS_kg, 
+                                     RobotConstants.MOI_KGM2, 
                                      modules);
 
         // Trustworthiness of the internal model of how motors should be moving
@@ -97,11 +97,11 @@ public class SwerveDrivetrainModel {
         // rotation)
         var visionMeasurementStdDevs = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(0.1));
 
-        m_poseEstimator = new SwerveDrivePoseEstimator(getGyroscopeRotation(), ROBOT.DFLT_START_POSE,
-                DRIVE.KINEMATICS, stateStdDevs, localMeasurementStdDevs, visionMeasurementStdDevs,
+        m_poseEstimator = new SwerveDrivePoseEstimator(getGyroscopeRotation(), RobotConstants.DFLT_START_POSE,
+                DriveConstants.DRIVETRAIN_KINEMATICS, stateStdDevs, localMeasurementStdDevs, visionMeasurementStdDevs,
                 SimConstants.CTRLS_SAMPLE_RATE_SEC);
 
-        setKnownPose(ROBOT.DFLT_START_POSE);
+        setKnownPose(RobotConstants.DFLT_START_POSE);
     }
 
     /**
@@ -243,16 +243,16 @@ public class SwerveDrivetrainModel {
       }
     }
 
-    public Command createCommandForTrajectory(PathPlannerTrajectory trajectory, DrivetrainSubsystem m_drive) {
+    public Command createCommandForTrajectory(PathPlannerTrajectory trajectory, DriveSubsystem m_drive) {
         SwerveControllerCommandPP swerveControllerCommand =
             new SwerveControllerCommandPP(
                 trajectory,
                 () -> getCurActPose(), // Functional interface to feed supplier
-                DRIVE.KINEMATICS,
+                DriveConstants.DRIVETRAIN_KINEMATICS,
 
                 // Position controllers
-                new PIDController(AUTO.kPXController, 0, 0),
-                new PIDController(AUTO.kPYController, 0, 0),
+                new PIDController(AutoConstants.kPXController, 0, 0),
+                new PIDController(AutoConstants.kPYController, 0, 0),
                 thetaController,
                 commandStates -> setModuleStates(commandStates),
                 m_drive);

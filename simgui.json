@@ -2,12 +2,15 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/DriveSubsystem": "Subsystem",
       "/LiveWindow/DrivetrainSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Driver Chooser": "String Chooser",
@@ -38,7 +41,7 @@
           "length": 0.5329999923706055,
           "width": 0.5329999923706055
         },
-        "image": "C:\\Users\\Admin\\Downloads\\2022TopDownFieldRenders\\RapidReactFieldRender-Light.png",
+        "image": "C:\\Users\\Admin\\Downloads\\2022-field.png",
         "window": {
           "visible": true
         }
@@ -51,6 +54,15 @@
     }
   },
   "NetworkTables": {
+    "Shuffleboard": {
+      "Drivetrain": {
+        "Back Left Module": {
+          "open": true
+        },
+        "open": true
+      },
+      "open": true
+    },
     "SmartDashboard": {
       "open": true
     }

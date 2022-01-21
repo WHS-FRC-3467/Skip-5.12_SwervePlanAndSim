@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.autocommands;
 
 //import java.util.ArrayList;
 //import java.util.List;
@@ -11,21 +11,16 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 //import edu.wpi.first.math.geometry.Translation2d;
 //import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-//import frc.robot.Constants.AUTO;
-//import frc.robot.Constants.DRIVE;
-//import frc.robot.lib.SwerveDriveKinematicsConstraint6391;
-//import frc.robot.lib.TrajectoryConfig6391;
-//import frc.robot.lib.TrajectoryGenerator6391;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystem;
 
 public class SemiCircle extends SequentialCommandGroup {
-/*   SwerveDriveKinematicsConstraint6391 constraint = new SwerveDriveKinematicsConstraint6391(DRIVE.KINEMATICS, DRIVE.MAX_FWD_REV_SPEED_MPS);
+/*   SwerveDriveKinematicsConstraint6391 constraint = new SwerveDriveKinematicsConstraint6391(DriveConstants.KINEMATICS, DriveConstants.MAX_FWD_REV_SPEED_MPS);
   TrajectoryConfig6391 config =
         new TrajectoryConfig6391(
-                AUTO.kMaxSpeedMetersPerSecond,
-                AUTO.kMaxAccelerationMetersPerSecondSquared)
+                AutoConstants.kMaxSpeedMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
             // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DRIVE.KINEMATICS)
+            .setKinematics(DriveConstants.KINEMATICS)
             .addConstraint(constraint);
   ArrayList<Rotation2d> headings = new ArrayList<Rotation2d>(
         List.of(
@@ -46,7 +41,7 @@ public class SemiCircle extends SequentialCommandGroup {
   
   PathPlannerTrajectory forward = PathPlanner.loadPath("SemiCircle", 2.0, 3.0);
           
-  public SemiCircle(DrivetrainSubsystem m_drive) {
+  public SemiCircle(DriveSubsystem m_drive) {
     addCommands(
       m_drive.dt.createCommandForTrajectory(forward, m_drive)
     );

@@ -9,30 +9,35 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.MoveForward;
-import frc.robot.commands.SemiCircle;
-import frc.robot.lib.XboxController6391;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.autocommands.MoveForward;
+import frc.robot.autocommands.SemiCircle;
+import frc.robot.autocommands.Swerve1;
+import frc.robot.control.XboxControllerButton;
+import frc.robot.control.XboxControllerEE;
+import frc.robot.subsystems.drive.SwerveDriveCommand;
+import frc.robot.subsystems.drive.DriveSubsystem;
 
 public class RobotContainer {
-  public static final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  private static final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
-  private static final XboxController6391 m_controller = new XboxController6391(0, 0.05);
+  private static final XboxControllerEE m_driverController = new XboxControllerEE(0, 0.05);
+  //private static final XboxControllerEE m_operatorController = new XboxControllerEE(1, 0.05);
 
   private static final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   public RobotContainer() {
     // Set up the default command for the drivetrain.
     // The controls are defined in the command but use both sticks and the triggers on the driver controller
-    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-            m_drivetrainSubsystem,
-            m_controller
+    m_driveSubsystem.setDefaultCommand(new SwerveDriveCommand(
+            m_driveSubsystem,
+            m_driverController
     ));
 
     // Populate Auto Chooser
-    autoChooser.setDefaultOption("Move Forward", new MoveForward(m_drivetrainSubsystem));
-    autoChooser.addOption("Semi-Circle", new SemiCircle(m_drivetrainSubsystem));
+    autoChooser.setDefaultOption("Move Forward", new MoveForward(m_driveSubsystem));
+    autoChooser.addOption("Semi-Circle", new SemiCircle(m_driveSubsystem));
+    autoChooser.addOption("Swerve1", new Swerve1(m_driveSubsystem));
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // Configure the button bindings
@@ -48,7 +53,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
     // No requirements because we don't need to interrupt anything
-    m_controller.BackButton.whenPressed(m_drivetrainSubsystem.dt::zeroGyroscope);
+    new XboxControllerButton(m_driverController, XboxController.Button.kBack)
+        .whenPressed(new InstantCommand(m_driveSubsystem.dt::zeroGyroscope, m_driveSubsystem));
+
   }
 
   /**

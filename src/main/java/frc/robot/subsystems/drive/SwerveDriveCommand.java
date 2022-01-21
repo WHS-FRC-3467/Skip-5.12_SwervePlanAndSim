@@ -1,16 +1,15 @@
-package frc.robot.commands;
+package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.DRIVE;
-import frc.robot.lib.XboxController6391;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.control.XboxControllerEE;
 
-public class DefaultDriveCommand extends CommandBase {
-    private final DrivetrainSubsystem m_drivetrainSubsystem;
-    private final XboxController6391 m_controller;
+public class SwerveDriveCommand extends CommandBase {
+    private final DriveSubsystem m_driveSubsystem;
+    private final XboxControllerEE m_controller;
     private static final SendableChooser<String> driverChooser = new SendableChooser<>();
     private static final SendableChooser<String> orientationChooser = new SendableChooser<>();
 
@@ -18,9 +17,9 @@ public class DefaultDriveCommand extends CommandBase {
     private double m_translationY;
     private double m_rotation;
 
-    public DefaultDriveCommand(DrivetrainSubsystem drivetrainSubsystem,
-                               XboxController6391 controller) {
-        this.m_drivetrainSubsystem = drivetrainSubsystem;
+    public SwerveDriveCommand(DriveSubsystem driveSubsystem,
+                               XboxControllerEE controller) {
+        this.m_driveSubsystem = driveSubsystem;
         this.m_controller = controller;
 
         // Control Scheme Chooser
@@ -35,57 +34,57 @@ public class DefaultDriveCommand extends CommandBase {
         orientationChooser.addOption("Robot Oriented", "Robot Oriented");
         SmartDashboard.putData("Orientation Chooser", orientationChooser);
 
-        addRequirements(drivetrainSubsystem);
+        addRequirements(m_driveSubsystem);
     }
 
     @Override
     public void execute() {
         switch (driverChooser.getSelected()) {
             case "Both Sticks":
-              m_translationX = modifyAxis(-m_controller.JoystickLY());
-              m_translationY = modifyAxis(-m_controller.JoystickLX());
-              m_rotation = modifyAxis(-m_controller.JoystickRX());
+              m_translationX = modifyAxis(-m_controller.getLeftYwDB());
+              m_translationY = modifyAxis(-m_controller.getLeftXwDB());
+              m_rotation = modifyAxis(-m_controller.getRightXwDB());
               break;
             case "Left Stick and Triggers":
-              m_translationX = modifyAxis(-m_controller.JoystickLY());
-              m_translationY = modifyAxis(-m_controller.JoystickLX());
+              m_translationX = modifyAxis(-m_controller.getLeftYwDB());
+              m_translationY = modifyAxis(-m_controller.getLeftXwDB());
               m_rotation = m_controller.TriggerCombined();
               break;
             case "Split Sticks and Triggers":
-              m_translationX = modifyAxis(-m_controller.JoystickLY());
-              m_translationY = modifyAxis(-m_controller.JoystickRX());
+              m_translationX = modifyAxis(-m_controller.getLeftYwDB());
+              m_translationY = modifyAxis(-m_controller.getRightXwDB());
               m_rotation = m_controller.TriggerCombined();
               break;
             case "Gas Pedal":
-              m_translationX = modifyAxis(-m_controller.JoystickLY());
-              m_translationY = modifyAxis(-m_controller.JoystickLX());
+              m_translationX = modifyAxis(-m_controller.getLeftYwDB());
+              m_translationY = modifyAxis(-m_controller.getLeftXwDB());
               double angle = calculateTranslationDirection(m_translationX, m_translationY);
-              m_translationX = Math.cos(angle) * m_controller.TriggerR();
-              m_translationY = Math.sin(angle) * m_controller.TriggerR();
-              m_rotation = modifyAxis(m_controller.JoystickRX());
+              m_translationX = Math.cos(angle) * m_controller.getRightTriggerAxis();
+              m_translationY = Math.sin(angle) * m_controller.getRightTriggerAxis();
+              m_rotation = modifyAxis(m_controller.getRightXwDB());
               break;
         }
 
         switch (orientationChooser.getSelected()) {
           case "Field Oriented":
-            m_drivetrainSubsystem.dt.setModuleStates(
-                DRIVE.KINEMATICS.toSwerveModuleStates(
+            m_driveSubsystem.dt.setModuleStates(
+                DriveConstants.DRIVETRAIN_KINEMATICS.toSwerveModuleStates(
                     ChassisSpeeds.fromFieldRelativeSpeeds(
-                            m_translationX * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-                            m_translationY * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-                            m_rotation * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-                            m_drivetrainSubsystem.dt.getGyroscopeRotation()
+                            m_translationX * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+                            m_translationY * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+                            m_rotation * DriveSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+                            m_driveSubsystem.dt.getGyroscopeRotation()
                     )
                 )    
             );
             break;
           case "Robot Oriented":
-            m_drivetrainSubsystem.dt.setModuleStates(
-              DRIVE.KINEMATICS.toSwerveModuleStates(
+            m_driveSubsystem.dt.setModuleStates(
+              DriveConstants.DRIVETRAIN_KINEMATICS.toSwerveModuleStates(
                   new ChassisSpeeds(
-                          m_translationX * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-                          m_translationY * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-                          m_rotation * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+                          m_translationX * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+                          m_translationY * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+                          m_rotation * DriveSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
                   )
               )    
             );
@@ -95,8 +94,8 @@ public class DefaultDriveCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        m_drivetrainSubsystem.dt.setModuleStates(
-          DRIVE.KINEMATICS.toSwerveModuleStates(  
+        m_driveSubsystem.dt.setModuleStates(
+          DriveConstants.DRIVETRAIN_KINEMATICS.toSwerveModuleStates(  
             new ChassisSpeeds(0.0, 0.0, 0.0)
           )    
         );
