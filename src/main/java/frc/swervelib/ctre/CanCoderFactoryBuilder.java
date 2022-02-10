@@ -5,7 +5,6 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 
-import frc.robot.Constants.DriveConstants;
 import frc.swervelib.AbsoluteEncoder;
 import frc.swervelib.AbsoluteEncoderFactory;
 
@@ -26,9 +25,9 @@ public class CanCoderFactoryBuilder {
             config.sensorDirection = direction == Direction.CLOCKWISE;
 
             CANCoder encoder = new CANCoder(configuration.getId());
-            CtreUtils.checkCtreError(encoder.configAllSettings(config, 250), "Failed to configure CANCoder");
+            encoder.configAllSettings(config, 250);
 
-            CtreUtils.checkCtreError(encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, periodMilliseconds, 250), "Failed to configure CANCoder update rate");
+            encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, periodMilliseconds, 250);
 
             return new EncoderImplementation(encoder);
         };
@@ -55,10 +54,10 @@ public class CanCoderFactoryBuilder {
         @Override
         public void setAbsoluteEncoder(double position, double velocity) {
             // Position is in revolutions.  Velocity is in RPM
-            // CANCoder wants steps for postion.  Steps per 100ms for velocity
-            encoder.getSimCollection().setRawPosition((int) (position * DriveConstants.STEER_ENC_COUNTS_PER_MODULE_REV));
-            // Divide by 600 to go from RPM to Rotations per 100ms.  Multiply by encoder ticks per revolution.
-            encoder.getSimCollection().setVelocity((int) (velocity / 600 * DriveConstants.STEER_ENC_COUNTS_PER_MODULE_REV));
+            // CANCoder wants steps for postion.  Steps per 100ms for velocity.  CANCoder has 4096 CPR.
+            encoder.getSimCollection().setRawPosition((int) (position * 4096));
+            // Divide by 600 to go from RPM to Rotations per 100ms.  CANCoder has 4096 CPR.
+            encoder.getSimCollection().setVelocity((int) (velocity / 600 * 4096));
         }
     }
 

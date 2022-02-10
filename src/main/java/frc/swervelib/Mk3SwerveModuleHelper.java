@@ -1,6 +1,5 @@
 package frc.swervelib;
 
-import frc.robot.Constants.RobotConstants;
 import frc.swervelib.ctre.*;
 import frc.swervelib.rev.NeoDriveControllerFactoryBuilder;
 import frc.swervelib.rev.NeoSteerConfiguration;
@@ -514,7 +513,7 @@ public final class Mk3SwerveModuleHelper {
         }
     }
 
-    public static SwerveModuleSim createSim(SwerveModule module, String namePrefix) {
+    public static SwerveModuleSim createSim(SwerveModule module) {
         ModuleConfiguration modConfig = module.getModuleConfiguration();
         return new SwerveModuleSim(module.getSteerController().getSteerMotor(),
                                    module.getDriveController().getDriveMotor(),
@@ -525,8 +524,8 @@ public final class Mk3SwerveModuleHelper {
                                    1 / modConfig.getDriveReduction(),
                                    1.1,
                                    0.8,
-                                   RobotConstants.MASS_kg * 9.81 / QuadSwerveSim.NUM_MODULES, 
-                                   0.01, namePrefix
+                                   SwerveConstants.MASS_kg * 9.81 / QuadSwerveSim.NUM_MODULES, 
+                                   0.01
                                    );
     }
 }

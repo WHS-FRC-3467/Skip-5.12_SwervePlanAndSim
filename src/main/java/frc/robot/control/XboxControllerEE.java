@@ -1,4 +1,4 @@
-package frc.robot.control;
+package frc.robot.Control;
 
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2016-2017 FIRST. All Rights Reserved.                        */
@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.GenericHID;
  */
 public class XboxControllerEE extends XboxController  
 {
-    private final double m_deadband;
 
     /**
      * Represents the POV DPad on an XboxController.
@@ -45,10 +44,9 @@ public class XboxControllerEE extends XboxController
      *
      * @param port The port on the Driver Station that the joystick is plugged into.
      */
-    public XboxControllerEE(final int port, double deadband)
+    public XboxControllerEE(final int port)
     {
         super(port);
-        m_deadband = deadband;
     }
 
  
@@ -77,22 +75,7 @@ public class XboxControllerEE extends XboxController
         return (getPOV(0) == 270 ? true : false);
     }
 
-    public double getLeftXwDB() {
-        return applyDeadband(getLeftX());
-     }
-  
-     public double getLeftYwDB() {
-        return applyDeadband(getLeftY());
-     }
-  
-     public double getRightXwDB() {
-        return applyDeadband(getRightX());
-     }
-  
-     public double getRightYwDB() {
-        return applyDeadband(getRightY());
-     }
-  
+
     public void setRumbleState(final boolean rumbleOn)
     {
         setRumble(GenericHID.RumbleType.kLeftRumble, rumbleOn ? 1 : 0);
@@ -105,19 +88,4 @@ public class XboxControllerEE extends XboxController
         setRumble(GenericHID.RumbleType.kRightRumble, rumbleValue);
     }
 
-    public double TriggerCombined() {
-        return getLeftTriggerAxis() - getRightTriggerAxis();
-     }
-  
-    private double applyDeadband(double value) {
-        if (Math.abs(value) > m_deadband) {
-            if (value > 0.0) {
-                return (value - m_deadband) / (1.0 - m_deadband);
-            } else {
-                return (value + m_deadband) / (1.0 - m_deadband);
-            }
-        } else {
-            return 0.0;
-        }
-    }
 }

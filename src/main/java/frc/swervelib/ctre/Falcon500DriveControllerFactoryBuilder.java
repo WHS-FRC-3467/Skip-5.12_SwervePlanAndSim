@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import edu.wpi.first.math.system.plant.DCMotor;
-import frc.robot.Constants.DriveConstants;
 import frc.swervelib.DriveController;
 import frc.swervelib.DriveControllerFactory;
 import frc.swervelib.ModuleConfiguration;
@@ -62,7 +61,7 @@ public final class Falcon500DriveControllerFactoryBuilder {
             }
 
             WPI_TalonFX motor = new WPI_TalonFX(driveConfiguration);
-            CtreUtils.checkCtreError(motor.configAllSettings(motorConfiguration), "Failed to configure Falcon 500");
+            motor.configAllSettings(motorConfiguration);
 
             if (hasVoltageCompensation()) {
                 // Enable voltage compensation
@@ -75,13 +74,10 @@ public final class Falcon500DriveControllerFactoryBuilder {
             motor.setSensorPhase(true);
 
             // Reduce CAN status frame rates
-            CtreUtils.checkCtreError(
-                    motor.setStatusFramePeriod(
-                            StatusFrameEnhanced.Status_1_General,
-                            STATUS_FRAME_GENERAL_PERIOD_MS,
-                            CAN_TIMEOUT_MS
-                    ),
-                    "Failed to configure Falcon status frame period"
+            motor.setStatusFramePeriod(
+                    StatusFrameEnhanced.Status_1_General,
+                    STATUS_FRAME_GENERAL_PERIOD_MS,
+                    CAN_TIMEOUT_MS
             );
 
             return new ControllerImplementation(motor, sensorVelocityCoefficient);
@@ -106,10 +102,10 @@ public final class Falcon500DriveControllerFactoryBuilder {
         @Override
         public void setDriveEncoder(double position, double velocity) {
             // Position is in revolutions.  Velocity is in RPM
-            // CANCoder wants steps for postion.  Steps per 100ms for velocity
-            motor.getSimCollection().setIntegratedSensorRawPosition((int) (position * DriveConstants.ENC_PULSE_PER_REV));
+            // TalonFX wants steps for postion.  Steps per 100ms for velocity.  Falcon integrated encoder has 2048 CPR.
+            motor.getSimCollection().setIntegratedSensorRawPosition((int) (position * 2048));
             // Divide by 600 to go from RPM to Rotations per 100ms.  Multiply by encoder ticks per revolution.
-            motor.getSimCollection().setIntegratedSensorVelocity((int) (velocity / 600 * DriveConstants.ENC_PULSE_PER_REV));
+            motor.getSimCollection().setIntegratedSensorVelocity((int) (velocity / 600 * 2048));
         }
 
         @Override
