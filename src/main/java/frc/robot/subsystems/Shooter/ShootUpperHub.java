@@ -5,15 +5,16 @@
 package frc.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.TowerConstants;
+import frc.robot.subsystems.Tower.TowerSubsystem;
 
-public class ShooterCommand extends CommandBase {
-  /** Creates a new ShooterCommand. */
-  double m_velocity;
+public class ShootUpperHub extends CommandBase {
   ShooterSubsystem m_shooter;
-  public ShooterCommand(double velocity, ShooterSubsystem shooter) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    m_velocity = velocity;
+  TowerSubsystem m_tower;
+  public ShootUpperHub(ShooterSubsystem shooter, TowerSubsystem tower) {
     m_shooter = shooter;
+    m_tower = tower;
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooter);
   }
 
@@ -24,13 +25,18 @@ public class ShooterCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.runShooter(m_velocity);
+    m_shooter.shootUpperHub();
+    
+    if (m_shooter.isWheelAtSpeed()) {
+      m_tower.driveWholeTower(TowerConstants.standardTowerSpeed);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_shooter.runShooter(0);
+    m_tower.driveWholeTower(0);
   }
 
   // Returns true when the command should end.

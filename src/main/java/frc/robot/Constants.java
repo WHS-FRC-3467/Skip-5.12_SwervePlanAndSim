@@ -4,13 +4,15 @@
 
 package frc.robot;
 
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import frc.swervelib.SdsModuleConfigurations;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -35,7 +37,6 @@ public final class Constants {
         public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 10; 
         public static final int BACK_LEFT_MODULE_STEER_ENCODER = 11; 
         public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 12; 
-		public static final int DRIVETRAIN_PIGEON_ID = 13; 
         
 		//non drivebase CAN IDs
         public static final int LowerTowerMotor = 13;
@@ -45,6 +46,8 @@ public final class Constants {
         public static final int ClimberLeft = 17;
         public static final int ClimberRight = 18;
         public static final int IntakeMotor = 19;
+        public static final int DRIVETRAIN_PIGEON_ID = 20; 
+
     }
 
     public static final class PWMConstants{
@@ -52,13 +55,21 @@ public final class Constants {
         public static final int Blinkin1 = 1;
         public static final int Blinkin2 = 2;
     }
-	
-	public static final class PHConstants{
+    
+    public static final class PHConstants{
         //PH is pneumatic Hub new PCM
-        public static final int IntakeForwardSoleniod = 0;
-        public static final int IntakeReverseSoleniod = 1;
-        public static final int ClimberForwardSoleniod = 2;
-        public static final int ClimberReverseSoleniod = 3;
+        public static final boolean UseREVPH = false;  // true for REV PH, false for CTRE PCM
+        //public static final PneumaticsModuleType PMType = PneumaticsModuleType.REVPH;
+        public static final PneumaticsModuleType PMType = PneumaticsModuleType.CTREPCM;
+
+        public static final int IntakeForwardSolenoid = 0;
+        public static final int IntakeReverseSolenoid = 1;
+        public static final int FixedClimberVerticalSolenoid = 2;
+        public static final int FixedClimberAngledSolenoid = 3;
+        public static final int ExtendingClimberAngledSolenoid = 4;
+        public static final int ExtendingClimberVerticalSolenoid = 5;
+        public static final int HoodForwardSolenoid = 6;
+        public static final int HoodReverseSolenoid = 7;
     }
     
 	public static final class DIOConstants{
@@ -106,22 +117,22 @@ public final class Constants {
             new Translation2d(-RobotConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -RobotConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0)
         );
 
-        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(104.179);
-	    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(115.75);
-	    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(324.755);
-	    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(108.896); 
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(250.0);
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(116.0);
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(293.0); 
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(312.0);
 
         // Drivetrain Performance Mechanical limits
         
         // The maximum velocity of the robot in meters per second.
         // The formula for calculating the theoretical maximum velocity is:
         // <Motor free speed RPM> / 60 * <Drive reduction> * <Wheel diameter meters> * PI
-        // By default this value is setup for a Mk3 FAST module using Falcon500s to drive.
+        // By default this value is setup for a MK4 module using Falcon500s to drive.
         public static final double MAX_VELOCITY_METERS_PER_SECOND =
             6380.0 /     // Falcon500 free speed (rpm)
             60.0 *       // sec per min
-            SdsModuleConfigurations.MK3_FAST.getDriveReduction() *
-            SdsModuleConfigurations.MK3_FAST.getWheelDiameter() * Math.PI;
+            SdsModuleConfigurations.MK4_L2.getDriveReduction() *
+            SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
 
         // The maximum angular velocity of the robot in radians per second.
         // This is a measure of how fast the robot can rotate in place.
@@ -148,19 +159,76 @@ public final class Constants {
         static public final double steer_ENC_MODULE_REVS_PER_COUNT = 1.0/((double)(STEER_ENC_COUNTS_PER_MODULE_REV));
 
 	    // PID Drive Constants
-		public static final double kP = 0.01;
-	    public static final double kI = 0.0;
-	    public static final double kD = 0.0008;
-	    public static final double driveTollerance = 100;
+    public static final double kP = 0.01;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0008;
+    public static final double driveTollerance = 100;
+    public static final double precisionSpeed = 0.25;
 
-    	//speed on -1 to 1 scale
-    	public static final double SimpleAutoVelocity = 0.25;
+    //speed on -1 to 1 scale
+    public static final double SimpleAutoVelocity = 0.15;
     }
 
     public static final class ShooterConstants {
-        public static final double testSpeed = 200.0;
+        public static final double lowerHubVelocity = 1400.0;
+	    public static final double upperHubVelocity = 3215.0;
+
+        public static final int kShooterTolerance = 75;
+        //double _kP, double _kI, double _kD, double _kF, int _kIzone, double _kPeakOutput
+        public static final Gains kGains = new Gains(0.0, 0.0, 0.0, 0.0, 0,  1.00);
+            
+        public static final double lowerKP = 0.01;
+        public static final double lowerKI = 0.0;
+        public static final double lowerKD = 1.2;
+        public static final double lowerKF = 0.053;
+
+        public static final double upperKP = 0.01; 
+        public static final double upperKI = 0.0;
+        public static final double upperKD = 0.9;
+        public static final double upperKF = 0.0482;
 	}
+
+    public static final class TowerConstants {
+        public static final double standardTowerSpeed = 0.75;
+    }
+    
+    public static final class ClimberConstants {
+
+        /**
+         * PID Gains may have to be adjusted based on the responsiveness of control loop.
+         * kF: 1023 represents output value to Talon at 100%, 6800 represents Velocity units at 100% output
+         * 
+         * 	                                    			   kP   kI   kD   kF   Iz   PeakOut */
+        public final static Gains kGains_Distance = new Gains( 0.5, 0.0, 0.01, .05, 100, 1.00 );
+        public final static Gains kGains_Turning  = new Gains( 0.2, 0.0, 0.0, 0.0, 200, 1.00 );
 	
+	    /* Motor neutral dead-band : Range 0.001 -> 0.25 */
+	    public final static double kNeutralDeadband = 0.001;
+
+	    /* Current Limit for arm calibration */
+        public final static double kCalibCurrentLimit = 10.0;
+
+        /**
+    	 * Set to zero to skip waiting for confirmation.
+	     * Set to nonzero to wait and report to DS if action fails.
+	    */
+	    public final static int kTimeoutMs = 30;
+
+        // Motion Magic constants
+        public static final int kMotionCruiseVelocity = 15000;
+        public static final int kMotionAcceleration = 15000;
+        public final static int kCurveSmoothing = 0;  /* Valid values: 0 -> 8 */
+        public static final int kTolerance = 500;
+
+        // Setpoints (in encoder ticks) (not tuned)
+        public static final double kClimbingRetractedPostion = 3000.0;
+        public static final double kRestingRetractedPostion = 4000.0;
+        public static final double kExtendedAboveBar = 50000.0;
+        public static final double kFixedArmsFree = 100000.0;
+        public static final double kFullExtendedPosition = 200000.0;
+
+    }
+
 	public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;

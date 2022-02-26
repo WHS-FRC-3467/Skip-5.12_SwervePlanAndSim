@@ -4,48 +4,90 @@
 
 package frc.robot.subsystems.Climber;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants.CanConstants;
 import frc.robot.Constants.PHConstants;
+import frc.robot.sim.PhysicsSim;
 
 public class ClimberSubsystem extends SubsystemBase {
- TalonFX m_climberMotorLeft = new TalonFX(CanConstants.ClimberLeft);
- TalonFX m_climberMotorRight = new TalonFX(CanConstants.ClimberRight);
-  DoubleSolenoid m_climberPiston = new DoubleSolenoid(9, PneumaticsModuleType.REVPH, PHConstants.ClimberForwardSoleniod, PHConstants.ClimberReverseSoleniod);
 
- 
-  /** Creates a new IntakeSubsystem. */
+  // Solenoid control
+  DoubleSolenoid m_fixedClimberPiston = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
+      PHConstants.FixedClimberVerticalSolenoid, PHConstants.FixedClimberAngledSolenoid);
+  DoubleSolenoid m_extendingClimberPiston = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
+      PHConstants.ExtendingClimberAngledSolenoid, PHConstants.ExtendingClimberVerticalSolenoid);
+
+  // Climber Winch Motors
+  TwinTalonFXMech m_talonMech = new TwinTalonFXMech(CanConstants.ClimberLeft, CanConstants.ClimberRight);
+
+  /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {
-    m_climberMotorLeft.setInverted(true);
-    m_climberMotorLeft.follow(m_climberMotorRight);
+
+    // Zero the encoders
+    m_talonMech.zeroSensors();
+
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+	public void simulationPeriodic() {
+		PhysicsSim.getInstance().run();
+	}
+
+  /*
+   * Manual Extendable Arm Control
+   */
+  public void adjustArmsManually(double speed) {
+    m_talonMech.drive(speed);
   }
 
+  /*
+   * Arm Calibration method
+   */
+  public boolean calibrateArm(boolean left) {
+    return m_talonMech.calibrate(left);
+  }
 
-public void driveClimber(double speed) {
-  m_climberMotorRight.set(ControlMode.PercentOutput, speed);
+  /*
+   * Motion Magic Extendable Arm Control
+   */
+  public void adjustArmsMagically(double position) {
+    m_talonMech.runMotionMagic(position);
+  }
 
-}
-public void climberForward(){
-m_climberPiston.set(Value.kForward);
-}
+  public void adjustArmsMagically() {
+    m_talonMech.runMotionMagic();
+  }
 
-public void climberReverse(){
-m_climberPiston.set(Value.kReverse);
-}
+  public boolean areArmsOnTarget() {
+    return m_talonMech.isMechOnTarget();
+  }
 
-public void toggleClimber(){
-m_climberPiston.toggle();  
-}
+  public void zeroSensors() {
+    m_talonMech.zeroSensors();
+  }
+
+  /*
+   *  Pneumatic Arm Positioning
+   */
+
+  public void fixedClimberVertical() {
+    m_fixedClimberPiston.set(Value.kForward);
+  }
+
+  public void fixedClimberAngled() {
+    m_fixedClimberPiston.set(Value.kReverse);
+  }
+
+  public void extendingClimberAngled() {
+    m_extendingClimberPiston.set(Value.kForward);
+  }
+
+  public void extendingClimberVertical() {
+    m_extendingClimberPiston.set(Value.kReverse);
+  }
 
 }

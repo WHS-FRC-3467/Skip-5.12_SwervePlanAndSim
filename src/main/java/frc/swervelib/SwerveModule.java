@@ -1,5 +1,7 @@
 package frc.swervelib;
 
+import com.swervedrivespecialties.swervelib.ModuleConfiguration;
+
 public interface SwerveModule {
     double getDriveVelocity();
 

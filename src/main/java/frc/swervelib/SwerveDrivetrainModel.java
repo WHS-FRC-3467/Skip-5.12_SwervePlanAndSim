@@ -58,10 +58,10 @@ public class SwerveDrivetrainModel {
         this.realModules = realModules;
 
         if (RobotBase.isSimulation()) {
-            modules.add(Mk3SwerveModuleHelper.createSim(realModules.get(0)));
-            modules.add(Mk3SwerveModuleHelper.createSim(realModules.get(1)));
-            modules.add(Mk3SwerveModuleHelper.createSim(realModules.get(2)));
-            modules.add(Mk3SwerveModuleHelper.createSim(realModules.get(3)));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(0)));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(1)));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(2)));
+            modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(3)));
         }
         
         thetaController.enableContinuousInput(-Math.PI, Math.PI);

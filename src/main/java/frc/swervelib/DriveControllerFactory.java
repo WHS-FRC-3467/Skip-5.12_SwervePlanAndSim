@@ -1,6 +1,7 @@
 package frc.swervelib;
 
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
+import com.swervedrivespecialties.swervelib.ModuleConfiguration;
 
 @FunctionalInterface
 public interface DriveControllerFactory<Controller extends DriveController, DriveConfiguration> {

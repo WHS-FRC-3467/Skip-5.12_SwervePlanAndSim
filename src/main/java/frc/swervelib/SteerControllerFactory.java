@@ -1,5 +1,7 @@
 package frc.swervelib;
 
+import com.swervedrivespecialties.swervelib.ModuleConfiguration;
+
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 
 @FunctionalInterface
