@@ -1,4 +1,4 @@
-package frc.robot.Control;
+package frc.robot.control;
 
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2016-2017 FIRST. All Rights Reserved.                        */
