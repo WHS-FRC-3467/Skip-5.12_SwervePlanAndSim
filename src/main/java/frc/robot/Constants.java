@@ -60,7 +60,8 @@ public final class Constants {
         //PH is pneumatic Hub new PCM
         public static final boolean UseREVPH = false;  // true for REV PH, false for CTRE PCM
         //public static final PneumaticsModuleType PMType = PneumaticsModuleType.REVPH;
-        public static final PneumaticsModuleType PMType = PneumaticsModuleType.CTREPCM;
+        public static final PneumaticsModuleType PMType = PneumaticsModuleType.REVPH;
+        ;
 
         public static final int IntakeForwardSolenoid = 0;
         public static final int IntakeReverseSolenoid = 1;
@@ -107,7 +108,7 @@ public final class Constants {
 
     public static final class DriveConstants{
 
-        public static final double STICK_DEADBAND = 0.20;
+        public static final double STICK_DEADBAND = 0.02;
         public static final boolean PRACTICE = true;
     
         public static final SwerveDriveKinematics DRIVETRAIN_KINEMATICS = new SwerveDriveKinematics(
@@ -173,7 +174,7 @@ public final class Constants {
         public static final double lowerHubVelocity = 1400.0;
 	    public static final double upperHubVelocity = 3215.0;
 
-        public static final int kShooterTolerance = 75;
+        public static final int kShooterTolerance = 200;
         //double _kP, double _kI, double _kD, double _kF, int _kIzone, double _kPeakOutput
         public static final Gains kGains = new Gains(0.0, 0.0, 0.0, 0.0, 0,  1.00);
             
@@ -184,7 +185,7 @@ public final class Constants {
 
         public static final double upperKP = 0.01; 
         public static final double upperKI = 0.0;
-        public static final double upperKD = 0.9;
+        public static final double upperKD = 1.0;
         public static final double upperKF = 0.0482;
 	}
 

@@ -66,6 +66,7 @@ public class BasicAutoDrive extends CommandBase {
     SmartDashboard.putNumber("Encoder position", m_drive.getAverageEncoder()-m_startEncoderValue);
   }
 
+  
   @Override
   public void end(boolean interrupted) {
     //When finished the drivebase is set to zero
