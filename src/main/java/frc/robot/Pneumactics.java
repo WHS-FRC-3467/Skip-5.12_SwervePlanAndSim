@@ -5,28 +5,35 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+//import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Pneumactics extends SubsystemBase{
-  /** Creates a new Pneumactics. */
-  Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);
-  PneumaticHub m_hub = new PneumaticHub();
 
-  boolean enabled = phCompressor.enabled();
-  boolean pressureSwitch = phCompressor.getPressureSwitchValue();
-  double current = phCompressor.getPressure();
+  private Compressor m_Compressor;
+  private int counter = 0;
 
+  // Pneumactics class constructor
   public Pneumactics() {
 
+    m_Compressor = new Compressor(Constants.PHConstants.PMType);
+    if (Constants.PHConstants.UseREVPH) {
+      m_Compressor.enableAnalog(120, 130);
+    } else {
+      m_Compressor.enableDigital();
+    }
   }
   
-  @Override
+  // This method will be called once per scheduler run
   public void periodic() {
-    phCompressor.enableAnalog(115, 120);
-    SmartDashboard.putNumber("Pressure", phCompressor.getPressure());
-    // This method will be called once per scheduler run
+
+    if (++ counter > 200) {
+      SmartDashboard.putBoolean("Compressor On", m_Compressor.enabled());
+      SmartDashboard.putBoolean("Pressure Low", m_Compressor.getPressureSwitchValue());
+      SmartDashboard.putNumber("Pressure (PSI)", m_Compressor.getPressure());
+      SmartDashboard.putNumber("Compressor Current (Amps)", m_Compressor.getCurrent());
+      counter = 0;
+    }
   }
 }

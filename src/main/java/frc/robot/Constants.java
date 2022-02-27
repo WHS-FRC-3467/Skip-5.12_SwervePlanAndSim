@@ -58,7 +58,7 @@ public final class Constants {
     
     public static final class PHConstants{
         //PH is pneumatic Hub new PCM
-        public static final boolean UseREVPH = false;  // true for REV PH, false for CTRE PCM
+        public static final boolean UseREVPH = true;  // true for REV PH, false for CTRE PCM
         //public static final PneumaticsModuleType PMType = PneumaticsModuleType.REVPH;
         public static final PneumaticsModuleType PMType = PneumaticsModuleType.REVPH;
         ;

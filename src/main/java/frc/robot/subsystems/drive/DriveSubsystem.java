@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Drive;
+package frc.robot.subsystems.drive;
 // Copyright (c) FIRST and other WPILib contributors.
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;

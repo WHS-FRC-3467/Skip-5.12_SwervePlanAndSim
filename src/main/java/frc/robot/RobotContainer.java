@@ -13,24 +13,26 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Autonomous.TwoBallAuto;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Control.XBoxControllerDPad;
-import frc.robot.Control.XboxControllerButton;
-import frc.robot.Control.XboxControllerEE;
+import frc.robot.control.XBoxControllerDPad;
+import frc.robot.control.XboxControllerButton;
+import frc.robot.control.XboxControllerEE;
 import frc.robot.Feedback.Cameras.Limelight;
 import frc.robot.subsystems.Climber.A0_CalibrateClimber;
+import frc.robot.subsystems.Climber.A5_LiftAndReach;
 import frc.robot.subsystems.Climber.A1_PrepareToClimb;
 import frc.robot.subsystems.Climber.A2_LiftToBar;
 import frc.robot.subsystems.Climber.A3_ReachToNextBar;
 import frc.robot.subsystems.Climber.A4_HookToNextBar;
+import frc.robot.subsystems.Climber.A7_HookAndReach;
 import frc.robot.subsystems.Climber.ClimberSubsystem;
 import frc.robot.subsystems.Climber.MagicClimbByDash;
 import frc.robot.subsystems.Climber.MagicClimbByStick;
 import frc.robot.subsystems.Climber.ManualClimbByStick;
-import frc.robot.subsystems.Drive.BearSwerveHelper;
-import frc.robot.subsystems.Drive.DriveSubsystem;
-import frc.robot.subsystems.Drive.SwerveDrive;
+import frc.robot.subsystems.drive.BearSwerveHelper;
+import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.drive.SwerveDrive;
 import frc.robot.subsystems.Intake.DriveIntake;
-import frc.robot.subsystems.Intake.IntakeOverride;
+//import frc.robot.subsystems.Intake.IntakeOverride;
 import frc.robot.subsystems.Intake.IntakeSubsystem;
 import frc.robot.subsystems.Shooter.AutoShoot;
 import frc.robot.subsystems.Shooter.ShootLowerHub;
@@ -110,7 +112,9 @@ public class RobotContainer {
     SmartDashboard.putData(new A2_LiftToBar(m_climberSubsystem));
     SmartDashboard.putData(new A3_ReachToNextBar(m_climberSubsystem));
     SmartDashboard.putData(new A4_HookToNextBar(m_climberSubsystem));
-    
+    SmartDashboard.putData(new A5_LiftAndReach(m_climberSubsystem));
+    SmartDashboard.putData(new A7_HookAndReach(m_climberSubsystem));
+        
     // Arm Driving Commands
     SmartDashboard.putData(new ManualClimbByStick(m_climberSubsystem, () -> (-1.0)*m_operatorController.getRightY()));
     SmartDashboard.putData(new MagicClimbByStick(m_climberSubsystem, () -> (-1.0)*m_operatorController.getRightY()));
@@ -134,11 +138,11 @@ public class RobotContainer {
     // new XboxControllerButton(m_driverController, XboxControllerEE.Button.kRightBumper)
     // .whenPressed(new InstantCommand(m_intakeSubsystem::intakeRetract, m_intakeSubsystem));
     
-    new XboxControllerButton(m_driverController, XboxControllerEE.Button.kLeftBumper)
-    .whileHeld(new IntakeOverride(m_intakeSubsystem, true));
+    //new XboxControllerButton(m_driverController, XboxControllerEE.Button.kLeftBumper)
+    //.whileHeld(new IntakeOverride(m_intakeSubsystem, true));
     
-    new XboxControllerButton(m_driverController, XboxControllerEE.Button.kRightBumper)
-    .whileHeld(new IntakeOverride(m_intakeSubsystem, false));
+    //new XboxControllerButton(m_driverController, XboxControllerEE.Button.kRightBumper)
+    //.whileHeld(new IntakeOverride(m_intakeSubsystem, false));
 
     // Back button zeros the gyroscope
     new XboxControllerButton(m_driverController, XboxControllerEE.Button.kBack)
