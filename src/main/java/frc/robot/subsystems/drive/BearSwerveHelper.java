@@ -1,10 +1,6 @@
-package frc.robot;
+package frc.robot.subsystems.Drive;
 
 import java.util.ArrayList;
-
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CanConstants;
 import frc.robot.Constants.DriveConstants;
@@ -19,19 +15,15 @@ import frc.swervelib.SwerveSubsystem;
 import frc.wpiClasses.QuadSwerveSim;
 
 public class BearSwerveHelper {
+        //Swerve Subsystem for auto and pathplanner
     public static SwerveDrivetrainModel createBearSwerve() {
         passConstants();
  
-        ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
         ArrayList<SwerveModule> modules = new ArrayList<SwerveModule>(QuadSwerveSim.NUM_MODULES);
 
         // By default we will use Falcon 500s in standard configuration. But if you use a different configuration or motors
         // you MUST change it. If you do not, your code will crash on startup.
         SwerveModule m_frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-                // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
-                tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(0, 0),
                 // This can either be STANDARD or FAST depending on your gear configuration
                 Mk4SwerveModuleHelper.GearRatio.L2,
                 // This is the ID of the drive motor
@@ -47,9 +39,6 @@ public class BearSwerveHelper {
     
         // We will do the same for the other modules
         SwerveModule m_frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
-                tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(2, 0),
                 Mk4SwerveModuleHelper.GearRatio.L2,
                 CanConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
                 CanConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
@@ -59,9 +48,6 @@ public class BearSwerveHelper {
         );
     
         SwerveModule m_backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-                tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(4, 0),
                 Mk4SwerveModuleHelper.GearRatio.L2,
                 CanConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
                 CanConstants.BACK_LEFT_MODULE_STEER_MOTOR,
@@ -71,9 +57,6 @@ public class BearSwerveHelper {
         );
     
         SwerveModule m_backRightModule = Mk4SwerveModuleHelper.createFalcon500(
-                tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(6, 0),
                 Mk4SwerveModuleHelper.GearRatio.L2,
                 CanConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
                 CanConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
@@ -83,14 +66,15 @@ public class BearSwerveHelper {
         );
     
         Gyroscope gyro = GyroscopeHelper.createPigeon2CAN(CanConstants.DRIVETRAIN_PIGEON_ID);
-    
+        modules.add(m_backRightModule);
         modules.add(m_frontLeftModule);
         modules.add(m_frontRightModule);
         modules.add(m_backLeftModule);
-        modules.add(m_backRightModule);
+
         return new SwerveDrivetrainModel(modules, gyro);
     }
-
+    
+        
     public static SwerveSubsystem createSwerveSubsystem(SwerveDrivetrainModel dt) {
         return new SwerveSubsystem(dt);        
     }

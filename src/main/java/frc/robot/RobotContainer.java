@@ -14,8 +14,8 @@ import frc.robot.Autonomous.TwoBallAuto;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Control.XBoxControllerDPad;
-import frc.robot.Control.XboxControllerButton;
-import frc.robot.Control.XboxControllerEE;
+import frc.robot.Control.XBoxControllerButton;
+import frc.robot.Control.XBoxControllerEE;
 import frc.robot.Feedback.Cameras.Limelight;
 import frc.robot.subsystems.Climber.A0_CalibrateClimber;
 import frc.robot.subsystems.Climber.A1_PrepareToClimb;
@@ -59,8 +59,8 @@ public class RobotContainer {
   private final ShooterSubsystem m_shooterSubystem = new ShooterSubsystem();
   private final TowerSubsystem m_towerSubsystem = new TowerSubsystem();
 
-  private final XboxControllerEE m_driverController = new XboxControllerEE(0);
-  private final XboxControllerEE m_operatorController = new XboxControllerEE(1);
+  private final XBoxControllerEE m_driverController = new XBoxControllerEE(0);
+  private final XBoxControllerEE m_operatorController = new XBoxControllerEE(1);
 
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -134,45 +134,45 @@ public class RobotContainer {
     // new XboxControllerButton(m_driverController, XboxControllerEE.Button.kRightBumper)
     // .whenPressed(new InstantCommand(m_intakeSubsystem::intakeRetract, m_intakeSubsystem));
     
-    new XboxControllerButton(m_driverController, XboxControllerEE.Button.kLeftBumper)
+    new XBoxControllerButton(m_driverController, XBoxControllerEE.Button.kLeftBumper)
     .whileHeld(new IntakeOverride(m_intakeSubsystem, true));
     
-    new XboxControllerButton(m_driverController, XboxControllerEE.Button.kRightBumper)
+    new XBoxControllerButton(m_driverController, XBoxControllerEE.Button.kRightBumper)
     .whileHeld(new IntakeOverride(m_intakeSubsystem, false));
 
     // Back button zeros the gyroscope
-    new XboxControllerButton(m_driverController, XboxControllerEE.Button.kBack)
+    new XBoxControllerButton(m_driverController, XBoxControllerEE.Button.kBack)
         .whenPressed(m_swerveSubsystem.dt::zeroGyroscope);
 
     //Operator controller    
-    new XboxControllerButton(m_operatorController, XboxControllerEE.Button.kA)
+    new XBoxControllerButton(m_operatorController, XBoxControllerEE.Button.kA)
     .whenHeld(new ShootLowerHub(m_shooterSubystem, m_towerSubsystem));
 
-    new XboxControllerButton(m_operatorController, XboxControllerEE.Button.kB)
+    new XBoxControllerButton(m_operatorController, XBoxControllerEE.Button.kB)
     .whenHeld(new ShootUpperHub(m_shooterSubystem, m_towerSubsystem));
 
-    new XboxControllerButton(m_operatorController, XboxControllerEE.Button.kX)
+    new XBoxControllerButton(m_operatorController, XBoxControllerEE.Button.kX)
     .whenHeld(new AutoShoot(m_shooterSubystem, m_towerSubsystem, ShooterConstants.upperHubVelocity));
 
-    new XboxControllerButton(m_operatorController, XboxControllerEE.Button.kLeftBumper)
+    new XBoxControllerButton(m_operatorController, XBoxControllerEE.Button.kLeftBumper)
     .whileActiveContinuous(new InstantCommand(m_shooterSubystem::deployHood, m_shooterSubystem));
     
-    new XboxControllerButton(m_operatorController, XboxControllerEE.Button.kRightBumper)
+    new XBoxControllerButton(m_operatorController, XBoxControllerEE.Button.kRightBumper)
     .whileActiveContinuous(new InstantCommand(m_shooterSubystem::retractHood, m_shooterSubystem));
 
-    new XboxControllerButton(m_operatorController, XboxControllerEE.Button.kA)
+    new XBoxControllerButton(m_operatorController, XBoxControllerEE.Button.kA)
     .whenPressed(new InstantCommand(m_climberSubsystem::zeroSensors));
         
-    new XBoxControllerDPad(m_operatorController, XboxControllerEE.DPad.kDPadUp)
+    new XBoxControllerDPad(m_operatorController, XBoxControllerEE.DPad.kDPadUp)
     .whileActiveContinuous(new InstantCommand(m_climberSubsystem::fixedClimberVertical));
     
-    new XBoxControllerDPad(m_operatorController, XboxControllerEE.DPad.kDPadDown)
+    new XBoxControllerDPad(m_operatorController, XBoxControllerEE.DPad.kDPadDown)
     .whileActiveContinuous(new InstantCommand(m_climberSubsystem::fixedClimberAngled));
 
-    new XBoxControllerDPad(m_operatorController, XboxControllerEE.DPad.kDPadLeft)
+    new XBoxControllerDPad(m_operatorController, XBoxControllerEE.DPad.kDPadLeft)
     .whileActiveContinuous(new InstantCommand(m_climberSubsystem::extendingClimberAngled));
     
-    new XBoxControllerDPad(m_operatorController, XboxControllerEE.DPad.kDPadRight)
+    new XBoxControllerDPad(m_operatorController, XBoxControllerEE.DPad.kDPadRight)
     .whileActiveContinuous(new InstantCommand(m_climberSubsystem::extendingClimberVertical));
   }
 
