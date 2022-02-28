@@ -108,7 +108,7 @@ public class RobotContainer {
 
     // Make the Climb Sequence commands available on SmartDash
     SmartDashboard.putData(new A0_CalibrateClimber(m_climberSubsystem));
-    SmartDashboard.putData(new A1_PrepareToClimb(m_climberSubsystem /*, m_intakeSubsystem */));
+    SmartDashboard.putData(new A1_PrepareToClimb(m_climberSubsystem, m_intakeSubsystem));
     SmartDashboard.putData(new A2_LiftToBar(m_climberSubsystem));
     SmartDashboard.putData(new A3_ReachToNextBar(m_climberSubsystem));
     SmartDashboard.putData(new A4_HookToNextBar(m_climberSubsystem));
@@ -146,7 +146,8 @@ public class RobotContainer {
 
     // Back button zeros the gyroscope
     new XboxControllerButton(m_driverController, XboxControllerEE.Button.kBack)
-        .whenPressed(m_swerveSubsystem.dt::zeroGyroscope);
+//        .whenPressed(m_swerveSubsystem.dt::zeroGyroscope);
+        .whenPressed(m_driveSubsystem::zeroGyroscope);
 
     //Operator controller    
     new XboxControllerButton(m_operatorController, XboxControllerEE.Button.kA)

@@ -19,7 +19,7 @@ public class Pneumactics extends SubsystemBase{
 
     m_Compressor = new Compressor(Constants.PHConstants.PMType);
     if (Constants.PHConstants.UseREVPH) {
-      m_Compressor.enableAnalog(120, 130);
+      m_Compressor.enableAnalog(115, 120);
     } else {
       m_Compressor.enableDigital();
     }
