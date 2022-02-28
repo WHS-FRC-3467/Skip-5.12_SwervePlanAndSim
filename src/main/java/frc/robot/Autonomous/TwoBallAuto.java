@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 //import frc.robot.AutoPathCommands.TwoBallPath;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Intake.AutoDriveIntake;
 import frc.robot.subsystems.Intake.IntakeSubsystem;
 import frc.robot.subsystems.Shooter.AutoShoot;
@@ -22,13 +21,11 @@ import frc.swervelib.SwerveSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class TwoBallAuto extends SequentialCommandGroup {
   /** Creates a new TwoBallAuto. */
-  DriveSubsystem m_drive;
   SwerveSubsystem m_swerve;
   ShooterSubsystem m_shooter;
   TowerSubsystem m_tower;
   IntakeSubsystem m_intake;
-  public TwoBallAuto(DriveSubsystem drive, SwerveSubsystem swerve, ShooterSubsystem shooter, TowerSubsystem tower, IntakeSubsystem intake) {
-    m_drive = drive;
+  public TwoBallAuto(SwerveSubsystem swerve, ShooterSubsystem shooter, TowerSubsystem tower, IntakeSubsystem intake) {
     m_swerve = swerve;
     m_intake = intake;
     m_tower = tower;

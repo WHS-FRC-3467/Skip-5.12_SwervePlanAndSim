@@ -27,6 +27,11 @@ public class Pigeon2FactoryBuilder {
         }
 
         @Override
+        public Boolean getGyroReady() {
+            return true; //pigeon.getState().equals(PigeonState.Ready);
+        }
+        
+        @Override
         public void zeroGyroscope() {
             pigeon.reset();
         }

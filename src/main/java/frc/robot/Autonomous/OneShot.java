@@ -5,7 +5,6 @@
 package frc.robot.Autonomous;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Shooter.ShootLowerHub;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Tower.TowerSubsystem;
@@ -15,7 +14,6 @@ import frc.robot.subsystems.Tower.TowerSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class OneShot extends SequentialCommandGroup {
   /** Creates a new OneBallAuto. */
-  DriveSubsystem m_drive;
   TowerSubsystem m_tower;
   ShooterSubsystem m_shooter;
 

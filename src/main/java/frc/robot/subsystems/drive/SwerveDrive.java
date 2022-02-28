@@ -1,58 +1,65 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 
 import java.util.function.DoubleSupplier;
+import frc.swervelib.SwerveInput;
+import frc.swervelib.SwerveSubsystem;
 
 public class SwerveDrive extends CommandBase{
       //Initialize Variables
-    DriveSubsystem m_driveSubsystem;
+    SwerveSubsystem m_swerveSubsystem;
     DoubleSupplier m_translationXSupplier;
     DoubleSupplier m_translationYSupplier;
     DoubleSupplier m_rotationSupplier;
-
+    double m_deadBand = DriveConstants.STICK_DEADBAND;
     SlewRateLimiter m_XRateLimiter = new SlewRateLimiter(0.5);
     SlewRateLimiter m_YRateLimiter = new SlewRateLimiter(0.5);
-
+    
     //Constructor for SwerveDrive
-    public SwerveDrive(DriveSubsystem driveSubsystem, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, DoubleSupplier rotationSupplier) {
-        m_driveSubsystem = driveSubsystem;
+    public SwerveDrive(SwerveSubsystem swerveSubsystem, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, DoubleSupplier rotationSupplier) {
+
+        m_swerveSubsystem = swerveSubsystem;
         m_translationXSupplier = translationXSupplier;
         m_translationYSupplier = translationYSupplier;
         m_rotationSupplier = rotationSupplier;
-        addRequirements(m_driveSubsystem);
+
+        addRequirements(m_swerveSubsystem);
+
+        if (Robot.isSimulation()) {
+            m_deadBand = 0.20;
+        }
     }
 
     @Override
     public void execute() {
-        // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement 
-        m_driveSubsystem.drive(
-            ChassisSpeeds.fromFieldRelativeSpeeds(
-                m_XRateLimiter.calculate(modifyAxis(m_translationXSupplier.getAsDouble())),
-                m_YRateLimiter.calculate(modifyAxis(m_translationYSupplier.getAsDouble())),
-                modifyAxis(m_rotationSupplier.getAsDouble()),
-                m_driveSubsystem.getGyroscopeRotation()
-            )
-        );
+
+      SwerveInput swerveInput = new SwerveInput(
+        m_XRateLimiter.calculate(modifyAxis(m_translationXSupplier.getAsDouble())),
+        m_YRateLimiter.calculate(modifyAxis(m_translationYSupplier.getAsDouble())),
+        modifyAxis(m_rotationSupplier.getAsDouble())
+      ); 
+
+      m_swerveSubsystem.dt.setModuleStates(swerveInput);
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_driveSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+        m_swerveSubsystem.dt.setModuleStates(new SwerveInput(0.0, 0.0, 0.0));    
+
     }
 
-    private static double modifyAxis(double value) {
+    private double modifyAxis(double value) {
       
         // Apply Deadband
-          double dband = DriveConstants.STICK_DEADBAND;
-          if (Math.abs(value) > dband) {
+          if (Math.abs(value) > m_deadBand) {
             if (value > 0.0) {
-                return (value - dband) / (1.0 - dband);
+                return (value - m_deadBand) / (1.0 - m_deadBand);
             } else {
-                return (value + dband) / (1.0 - dband);
+                return (value + m_deadBand) / (1.0 - m_deadBand);
             }
           } else {
             value = 0.0;

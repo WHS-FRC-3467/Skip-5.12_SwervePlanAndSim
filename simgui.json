@@ -43,6 +43,8 @@
       "/SmartDashboard/A2_LiftToBar": "Command",
       "/SmartDashboard/A3_ReachToNextBar": "Command",
       "/SmartDashboard/A4_HookToNextBar": "Command",
+      "/SmartDashboard/A5_LiftAndReach": "Command",
+      "/SmartDashboard/A7_HookAndReach": "Command",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Driver Chooser": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
@@ -71,6 +73,7 @@
           "length": 0.5329999923706055,
           "width": 0.5329999923706055
         },
+        "image": "C:\\Users\\Admin\\Downloads\\2022-field.png",
         "window": {
           "visible": true
         }

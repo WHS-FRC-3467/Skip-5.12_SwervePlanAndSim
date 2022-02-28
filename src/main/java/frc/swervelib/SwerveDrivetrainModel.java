@@ -3,6 +3,7 @@ package frc.swervelib;
 import java.util.ArrayList;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -12,12 +13,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,6 +39,7 @@ public class SwerveDrivetrainModel {
 
     Pose2d endPose;
     PoseTelemetry dtPoseView;
+    SwerveDriveOdometry m_odometry;
 
     SwerveDrivePoseEstimator m_poseEstimator;
     Pose2d curEstPose = new Pose2d(SwerveConstants.DFLT_START_POSE.getTranslation(), SwerveConstants.DFLT_START_POSE.getRotation());
@@ -56,6 +58,8 @@ public class SwerveDrivetrainModel {
     public SwerveDrivetrainModel(ArrayList<SwerveModule> realModules, Gyroscope gyro){
         this.gyro = gyro;
         this.realModules = realModules;
+
+        m_odometry = new SwerveDriveOdometry(SwerveConstants.KINEMATICS, getGyroscopeRotation());
 
         if (RobotBase.isSimulation()) {
             modules.add(Mk4SwerveModuleHelper.createSim(realModules.get(0)));
@@ -99,7 +103,6 @@ public class SwerveDrivetrainModel {
         orientationChooser.setDefaultOption("Field Oriented", "Field Oriented");
         orientationChooser.addOption("Robot Oriented", "Robot Oriented");
         SmartDashboard.putData("Orientation Chooser", orientationChooser);
-        Shuffleboard.getTab("Driver Dash").add("Orientation Chooser", orientationChooser);
 
         m_holo = new HolonomicDriveController(SwerveConstants.XPIDCONTROLLER, SwerveConstants.YPIDCONTROLLER, thetaController);
     }
@@ -112,6 +115,7 @@ public class SwerveDrivetrainModel {
      */
     public void modelReset(Pose2d pose){
         swerveDt.modelReset(pose);
+        m_odometry.resetPosition(pose, getGyroscopeRotation());
     }
 
     /**
@@ -152,7 +156,7 @@ public class SwerveDrivetrainModel {
         }
 
         // Update associated devices based on drivetrain motion
-        gyro.setAngle(swerveDt.getCurPose().getRotation().getDegrees());
+        gyro.setAngle(-swerveDt.getCurPose().getRotation().getDegrees());
 
         // Based on gyro and measured module speeds and positions, estimate where our
         // robot should have moved to.
@@ -214,8 +218,8 @@ public class SwerveDrivetrainModel {
       return states;
     }
 
-    public Pose2d getCurActPose(){
-        return dtPoseView.getFieldPose();
+    public Pose2d getPose(){
+        return m_odometry.getPoseMeters();
     }
 
     public Pose2d getEstPose() {
@@ -223,9 +227,10 @@ public class SwerveDrivetrainModel {
     }
 
     public void setKnownPose(Pose2d in) {
+        m_odometry.resetPosition(in, getGyroscopeRotation());
         resetWheelEncoders();
-        // No need to reset gyro, pose estimator does that.
         m_poseEstimator.resetPosition(in, getGyroscopeRotation());
+        zeroGyroscope();
         updateDownfieldFlag();
         curEstPose = in;
     }
@@ -243,6 +248,10 @@ public class SwerveDrivetrainModel {
         return gyro.getGyroHeading();
     }
 
+    public Boolean getGyroReady() {
+        return gyro.getGyroReady();
+    }
+
     public void updateTelemetry(){
         dtPoseView.update(Timer.getFPGATimestamp()*1000);
     }
@@ -258,10 +267,10 @@ public class SwerveDrivetrainModel {
     }
 
     public Command createCommandForTrajectory(PathPlannerTrajectory trajectory, SwerveSubsystem m_drive) {
-        SwerveControllerCommandPP swerveControllerCommand =
-            new SwerveControllerCommandPP(
+        PPSwerveControllerCommand swerveControllerCommand =
+            new PPSwerveControllerCommand(
                 trajectory,
-                () -> getCurActPose(), // Functional interface to feed supplier
+                () -> getPose(), // Functional interface to feed supplier
                 SwerveConstants.KINEMATICS,
 
                 // Position controllers
@@ -270,7 +279,7 @@ public class SwerveDrivetrainModel {
                 thetaController,
                 commandStates -> this.states = commandStates,
                 m_drive);
-        return swerveControllerCommand;
+        return swerveControllerCommand.andThen(() -> setModuleStates(new SwerveInput(0,0,0)));
     }
 
     public ArrayList<SwerveModule> getRealModules() {
@@ -282,6 +291,22 @@ public class SwerveDrivetrainModel {
     }
 
     public void goToPose(Pose2d desiredPose, double angle) {
-        setModuleStates(m_holo.calculate(getCurActPose(), desiredPose, 1, Rotation2d.fromDegrees(angle)));
+        setModuleStates(m_holo.calculate(getPose(), desiredPose, 1, Rotation2d.fromDegrees(angle)));
+    }
+
+    public void updateOdometry() {
+/*      if (RobotBase.isReal()) {
+            states[0].speedMetersPerSecond = Math.abs(realModules.get(0).getDriveVelocity());
+            states[1].speedMetersPerSecond = Math.abs(realModules.get(1).getDriveVelocity());
+            states[2].speedMetersPerSecond = Math.abs(realModules.get(2).getDriveVelocity());
+            states[3].speedMetersPerSecond = Math.abs(realModules.get(3).getDriveVelocity());
+        }
+        else {
+            states[0].speedMetersPerSecond = Math.abs(modules.get(0).getWheelEncoderVelocityRPM());
+            states[1].speedMetersPerSecond = Math.abs(modules.get(1).getWheelEncoderVelocityRPM());
+            states[2].speedMetersPerSecond = Math.abs(modules.get(2).getWheelEncoderVelocityRPM());
+            states[3].speedMetersPerSecond = Math.abs(modules.get(3).getWheelEncoderVelocityRPM());
+        } */
+        m_odometry.update(getGyroscopeRotation(), states);
     }
 }

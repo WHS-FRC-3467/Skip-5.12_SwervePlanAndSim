@@ -225,7 +225,7 @@ public final class Constants {
         public static final double kClimbingRetractedPostion = 3000.0;
         public static final double kRestingRetractedPostion = 4000.0;
         public static final double kExtendedAboveBar = 50000.0;
-        public static final double kFixedArmsFree = 100000.0;
+        public static final double kFixedArmsFree = 75000.0;
         public static final double kFullExtendedPosition = 200000.0;
 
     }
