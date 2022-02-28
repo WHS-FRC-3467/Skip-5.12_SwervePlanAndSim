@@ -22,6 +22,8 @@ import frc.robot.subsystems.Climber.A1_PrepareToClimb;
 import frc.robot.subsystems.Climber.A2_LiftToBar;
 import frc.robot.subsystems.Climber.A3_ReachToNextBar;
 import frc.robot.subsystems.Climber.A4_HookToNextBar;
+import frc.robot.subsystems.Climber.A5_LiftAndReach;
+import frc.robot.subsystems.Climber.A7_HookAndReach;
 import frc.robot.subsystems.Climber.ClimberSubsystem;
 import frc.robot.subsystems.Climber.MagicClimbByDash;
 import frc.robot.subsystems.Climber.MagicClimbByStick;
@@ -106,16 +108,19 @@ public class RobotContainer {
 
     // Make the Climb Sequence commands available on SmartDash
     SmartDashboard.putData(new A0_CalibrateClimber(m_climberSubsystem));
-    SmartDashboard.putData(new A1_PrepareToClimb(m_climberSubsystem /*, m_intakeSubsystem */));
+    SmartDashboard.putData(new A1_PrepareToClimb(m_climberSubsystem, m_intakeSubsystem));
     SmartDashboard.putData(new A2_LiftToBar(m_climberSubsystem));
     SmartDashboard.putData(new A3_ReachToNextBar(m_climberSubsystem));
     SmartDashboard.putData(new A4_HookToNextBar(m_climberSubsystem));
-    
-    // Arm Driving Commands
+    SmartDashboard.putData(new A5_LiftAndReach(m_climberSubsystem));
+    SmartDashboard.putData(new A7_HookAndReach(m_climberSubsystem));
+        
+    // Climber Arm Driving Commands
     SmartDashboard.putData(new ManualClimbByStick(m_climberSubsystem, () -> (-1.0)*m_operatorController.getRightY()));
     SmartDashboard.putData(new MagicClimbByStick(m_climberSubsystem, () -> (-1.0)*m_operatorController.getRightY()));
     SmartDashboard.putData(new MagicClimbByDash(m_climberSubsystem));
 
+    // Zero Climber Sensors
     SmartDashboard.putData(new InstantCommand(m_climberSubsystem::zeroSensors, m_climberSubsystem));
 
   }

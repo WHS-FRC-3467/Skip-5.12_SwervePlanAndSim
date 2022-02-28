@@ -6,17 +6,17 @@ package frc.robot.subsystems.Climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ClimberConstants;
-// import frc.robot.subsystems.Intake.IntakeSubsystem;
+import frc.robot.subsystems.Intake.IntakeSubsystem;
 
 public class A1_PrepareToClimb extends CommandBase {
 
   ClimberSubsystem m_climber;
-//  IntakeSubsystem m_intake;
+  IntakeSubsystem m_intake;
 
-  public A1_PrepareToClimb(ClimberSubsystem climber) //, IntakeSubsystem intake)
+  public A1_PrepareToClimb(ClimberSubsystem climber, IntakeSubsystem intake)
   {
     m_climber = climber;
-//    m_intake = intake;
+    m_intake = intake;
     addRequirements(m_climber);
   }
 
@@ -24,7 +24,7 @@ public class A1_PrepareToClimb extends CommandBase {
   public void initialize() {
 
     // Deploy Intake
-    // m_intake.intakeDeploy();
+    m_intake.intakeDeploy();
 
   }
 
@@ -32,7 +32,8 @@ public class A1_PrepareToClimb extends CommandBase {
   public void execute() {
 
     // Angle Adjustable Arms
-    m_climber.extendingClimberAngled();
+    //m_climber.extendingClimberAngled();
+    m_climber.extendingClimberVertical();
 
     // Fixed Arms to Vertical
     m_climber.fixedClimberVertical();
