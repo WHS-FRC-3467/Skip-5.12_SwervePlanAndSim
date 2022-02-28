@@ -1,4 +1,3 @@
-
 package frc.robot.subsystems.Drive;
 // Copyright (c) FIRST and other WPILib contributors.
 
@@ -30,7 +29,7 @@ import frc.robot.Constants.RobotConstants;
 import static frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystem extends SubsystemBase {
-        // drive subsystem for teleop
+
   // The maximum voltage that will be delivered to the drive motors.
         public static final double MAX_VOLTAGE = 12.0;
         TalonFX m_frontLeftDriveMotor = new TalonFX(CanConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR);
@@ -49,7 +48,7 @@ public class DriveSubsystem extends SubsystemBase {
         // By default this value is setup for a Mk3 standard module using Falcon500s to
         // drive.
         // The maximum velocity of the robot in meters per second.
-        public static final double MAX_VELOCITY_METERS_PER_SECOND = 5800.0 / 60.0 * SdsModuleConfigurations.MK4_L2.getDriveReduction() * SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+        public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 * SdsModuleConfigurations.MK4_L2.getDriveReduction() * SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
 
         // The maximum angular velocity of the robot in radians per second.
         // This is a measure of how fast the robot can rotate in place.
@@ -57,12 +56,12 @@ public class DriveSubsystem extends SubsystemBase {
         // replace this with a measured amount.
         public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND
                         / Math.hypot(RobotConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                                        RobotConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
+                                RobotConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
         private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
                         // Front left
                         new Translation2d(RobotConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                                        RobotConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+                                RobotConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
                         // Front right
                         new Translation2d(RobotConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
                                         -RobotConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
@@ -159,15 +158,15 @@ public class DriveSubsystem extends SubsystemBase {
                 // normalize wheel speeds
                 SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
-                m_frontLeftModule.set(states[0].speedMetersPerSecond * MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+                m_frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
                                 states[0].angle.getRadians());
-                m_frontRightModule.set(states[1].speedMetersPerSecond * MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+                m_frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
                                 states[1].angle.getRadians());
-                m_backLeftModule.set(states[2].speedMetersPerSecond * MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+                m_backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
                                 states[2].angle.getRadians());
-                m_backRightModule.set(states[3].speedMetersPerSecond * MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+                m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
                                 states[3].angle.getRadians());
-                                
+
                 SmartDashboard.putNumber("front right", m_frontRightDriveMotor.getSelectedSensorPosition());
         }
 

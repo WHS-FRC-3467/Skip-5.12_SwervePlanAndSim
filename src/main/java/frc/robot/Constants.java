@@ -108,7 +108,6 @@ public final class Constants {
 
     public static final class DriveConstants{
 
-        public static final double STICK_DEADBAND = 0.02;
         public static final boolean PRACTICE = true;
     
         public static final SwerveDriveKinematics DRIVETRAIN_KINEMATICS = new SwerveDriveKinematics(
@@ -118,10 +117,10 @@ public final class Constants {
             new Translation2d(-RobotConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -RobotConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0)
         );
 
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(250.0);
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(116.0);
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(293.0); 
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(312.0);
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(69.785);
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(295.049);
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(110.127); 
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(131.221);
 
         // Drivetrain Performance Mechanical limits
         
@@ -180,13 +179,13 @@ public final class Constants {
             
         public static final double lowerKP = 0.01;
         public static final double lowerKI = 0.0;
-        public static final double lowerKD = 1.2;
-        public static final double lowerKF = 0.053;
+        public static final double lowerKD = 1.3;
+        public static final double lowerKF = 0.048;
 
         public static final double upperKP = 0.01; 
         public static final double upperKI = 0.0;
-        public static final double upperKD = 1.0;
-        public static final double upperKF = 0.0482;
+        public static final double upperKD = 1.3;
+        public static final double upperKF = 0.0471;
 	}
 
     public static final class TowerConstants {

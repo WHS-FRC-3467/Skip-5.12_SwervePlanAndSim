@@ -72,8 +72,8 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(DriveConstants.PRACTICE);
 	
 	// Setup the Swerve Subsystem (w/ simulation support)
-  	dt = BearSwerveHelper.createBearSwerve();
-    m_swerveSubsystem = BearSwerveHelper.createSwerveSubsystem(dt);
+  	// dt = BearSwerveHelper.createBearSwerve();
+    // m_swerveSubsystem = BearSwerveHelper.createSwerveSubsystem(dt);
 
     // Populate Auto Chooser
     Shuffleboard.getTab("Driver Dash").add("Auto Chooser", m_chooser);
@@ -89,14 +89,14 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", m_chooser);
 
 	  // Set up the default commands for the various subsystems
-    m_driveSubsystem.setDefaultCommand(new SwerveDrive(m_driveSubsystem,
-                                      () -> -(m_driverController.getLeftX()),
-                                      () -> (m_driverController.getLeftY()),
-                                      () -> (m_driverController.getRightX())));
+    m_driveSubsystem.setDefaultCommand(new SwerveDrive(m_driveSubsystem, 
+                                      () -> (m_driverController.getLeftX()) * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+                                      () -> -(m_driverController.getLeftY()) * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+                                      () -> -(m_driverController.getRightX()) * DriveSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
     
     m_intakeSubsystem.setDefaultCommand(new DriveIntake(m_intakeSubsystem,
-                                        () -> (m_driverController.getRightTriggerAxis()),  
-                                        () -> (m_driverController.getLeftTriggerAxis())));
+                                        () -> (m_operatorController.getRightTriggerAxis()),  
+                                        () -> (m_operatorController.getLeftTriggerAxis())));
 
     m_towerSubsystem.setDefaultCommand(new DriveTower(m_towerSubsystem,  
                                       () -> -m_operatorController.getLeftY()));
@@ -128,52 +128,47 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     //Driver Controller
-    // new XboxControllerButton(m_driverController, XboxControllerEE.Button.kLeftBumper)
-    // .whenPressed(new InstantCommand(m_intakeSubsystem::intakeDeploy, m_intakeSubsystem));
-    
-    // new XboxControllerButton(m_driverController, XboxControllerEE.Button.kRightBumper)
-    // .whenPressed(new InstantCommand(m_intakeSubsystem::intakeRetract, m_intakeSubsystem));
-    
+        
     new XBoxControllerButton(m_driverController, XBoxControllerEE.Button.kLeftBumper)
-    .whileHeld(new IntakeOverride(m_intakeSubsystem, true));
+      .whileHeld(new IntakeOverride(m_intakeSubsystem, true));
     
     new XBoxControllerButton(m_driverController, XBoxControllerEE.Button.kRightBumper)
-    .whileHeld(new IntakeOverride(m_intakeSubsystem, false));
+      .whileHeld(new IntakeOverride(m_intakeSubsystem, false));
 
     // Back button zeros the gyroscope
     new XBoxControllerButton(m_driverController, XBoxControllerEE.Button.kBack)
-        .whenPressed(m_swerveSubsystem.dt::zeroGyroscope);
+        .whenPressed(m_driveSubsystem::zeroGyroscope);
 
     //Operator controller    
     new XBoxControllerButton(m_operatorController, XBoxControllerEE.Button.kA)
-    .whenHeld(new ShootLowerHub(m_shooterSubystem, m_towerSubsystem));
+      .whenHeld(new ShootLowerHub(m_shooterSubystem, m_towerSubsystem));
 
     new XBoxControllerButton(m_operatorController, XBoxControllerEE.Button.kB)
-    .whenHeld(new ShootUpperHub(m_shooterSubystem, m_towerSubsystem));
+      .whenHeld(new ShootUpperHub(m_shooterSubystem, m_towerSubsystem));
 
     new XBoxControllerButton(m_operatorController, XBoxControllerEE.Button.kX)
-    .whenHeld(new AutoShoot(m_shooterSubystem, m_towerSubsystem, ShooterConstants.upperHubVelocity));
+      .whenHeld(new AutoShoot(m_shooterSubystem, m_towerSubsystem, ShooterConstants.upperHubVelocity));
 
     new XBoxControllerButton(m_operatorController, XBoxControllerEE.Button.kLeftBumper)
-    .whileActiveContinuous(new InstantCommand(m_shooterSubystem::deployHood, m_shooterSubystem));
+      .whileActiveContinuous(new InstantCommand(m_shooterSubystem::deployHood, m_shooterSubystem));
     
     new XBoxControllerButton(m_operatorController, XBoxControllerEE.Button.kRightBumper)
-    .whileActiveContinuous(new InstantCommand(m_shooterSubystem::retractHood, m_shooterSubystem));
+      .whileActiveContinuous(new InstantCommand(m_shooterSubystem::retractHood, m_shooterSubystem));
 
     new XBoxControllerButton(m_operatorController, XBoxControllerEE.Button.kA)
-    .whenPressed(new InstantCommand(m_climberSubsystem::zeroSensors));
+      .whenPressed(new InstantCommand(m_climberSubsystem::zeroSensors));
         
     new XBoxControllerDPad(m_operatorController, XBoxControllerEE.DPad.kDPadUp)
-    .whileActiveContinuous(new InstantCommand(m_climberSubsystem::fixedClimberVertical));
+     .whileActiveContinuous(new InstantCommand(m_climberSubsystem::fixedClimberVertical));
     
     new XBoxControllerDPad(m_operatorController, XBoxControllerEE.DPad.kDPadDown)
-    .whileActiveContinuous(new InstantCommand(m_climberSubsystem::fixedClimberAngled));
+      .whileActiveContinuous(new InstantCommand(m_climberSubsystem::fixedClimberAngled));
 
     new XBoxControllerDPad(m_operatorController, XBoxControllerEE.DPad.kDPadLeft)
-    .whileActiveContinuous(new InstantCommand(m_climberSubsystem::extendingClimberAngled));
+      .whileActiveContinuous(new InstantCommand(m_climberSubsystem::extendingClimberAngled));
     
     new XBoxControllerDPad(m_operatorController, XBoxControllerEE.DPad.kDPadRight)
-    .whileActiveContinuous(new InstantCommand(m_climberSubsystem::extendingClimberVertical));
+      .whileActiveContinuous(new InstantCommand(m_climberSubsystem::extendingClimberVertical));
   }
 
   /**
