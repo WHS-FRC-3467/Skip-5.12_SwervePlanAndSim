@@ -27,7 +27,7 @@ import frc.robot.sim.PhysicsSim;
 public class TwinTalonFXMech {
 
     /* Enable SmartDash Output? */
-	boolean m_debugging = true;	
+	boolean m_debugging = false;	
 	int m_debug_counter = 0;	
 		
     /** Hardware */
