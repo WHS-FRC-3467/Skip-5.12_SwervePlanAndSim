@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ClimberConstants;
 
-public class A2_LiftToBar extends CommandBase {
+public class X2_LiftToBar extends CommandBase {
 
   ClimberSubsystem m_climber;
   int m_climbPhase = 1;
   Timer m_timer = new Timer();
 
-  public A2_LiftToBar(ClimberSubsystem climber) {
+  public X2_LiftToBar(ClimberSubsystem climber) {
     m_climber = climber;
     addRequirements(m_climber);
   }

@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ClimberConstants;
 
-public class A4_HookToNextBar extends CommandBase {
+public class X4_HookToNextBar extends CommandBase {
 
   ClimberSubsystem m_climber;
   int m_climbPhase = 1;
   Timer m_timer = new Timer();
 
-  public A4_HookToNextBar(ClimberSubsystem climber) {
+  public X4_HookToNextBar(ClimberSubsystem climber) {
     m_climber = climber;
     addRequirements(m_climber);
   }
@@ -47,17 +47,6 @@ public class A4_HookToNextBar extends CommandBase {
       }
       break;
 
-/*
-    case 2:
-      //Continue Retracting AdjArms to Minimum length and Move FixArms to Vertical position
-      m_climber.adjustArmsMagically(ClimberConstants.kClimbingRetractedPostion);
-      m_climber.fixedClimberVertical();
-
-      if (m_climber.areArmsOnTarget()) {
-        m_climbPhase = 3;
-      }
-      break;
-*/
     case 3:
       // Drop down so the fixed hooks can get under the bar  
       m_climber.adjustArmsMagically(ClimberConstants.kFixedArmsFree);
@@ -81,7 +70,6 @@ public class A4_HookToNextBar extends CommandBase {
         m_climbPhase = 0;  // Finished
       }
       break;
-
 
     default:
       SmartDashboard.putString("status", "Phase ???");

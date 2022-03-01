@@ -31,8 +31,7 @@ public class A1_PrepareToClimb extends CommandBase {
   @Override
   public void execute() {
 
-    // Angle Adjustable Arms
-    //m_climber.extendingClimberAngled();
+    // Adjustable Arms to Vertical
     m_climber.extendingClimberVertical();
 
     // Fixed Arms to Vertical
