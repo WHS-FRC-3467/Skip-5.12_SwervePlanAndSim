@@ -6,27 +6,19 @@ package frc.robot.subsystems.Climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ClimberConstants;
-import frc.robot.subsystems.Intake.IntakeSubsystem;
 
 public class A1_PrepareToClimb extends CommandBase {
 
   ClimberSubsystem m_climber;
-  IntakeSubsystem m_intake;
 
-  public A1_PrepareToClimb(ClimberSubsystem climber, IntakeSubsystem intake)
+  public A1_PrepareToClimb(ClimberSubsystem climber)
   {
     m_climber = climber;
-    m_intake = intake;
     addRequirements(m_climber);
   }
 
   @Override
-  public void initialize() {
-
-    // Deploy Intake
-    m_intake.intakeDeploy();
-
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
