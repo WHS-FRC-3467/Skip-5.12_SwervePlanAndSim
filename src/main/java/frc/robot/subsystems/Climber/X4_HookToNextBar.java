@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ClimberConstants;
 
-public class A4_HookToNextBar extends CommandBase {
+public class X4_HookToNextBar extends CommandBase {
 
   ClimberSubsystem m_climber;
   int m_climbPhase = 1;
   Timer m_timer = new Timer();
 
-  public A4_HookToNextBar(ClimberSubsystem climber) {
+  public X4_HookToNextBar(ClimberSubsystem climber) {
     m_climber = climber;
     addRequirements(m_climber);
   }
@@ -35,44 +35,41 @@ public class A4_HookToNextBar extends CommandBase {
 
       //Start retracting AdjArms to FixedArmFree position and start moving FixArms to Angled position
       m_timer.start();
-      m_climber.adjustArmsMagically(ClimberConstants.kFixedArmsFree);
-      if (m_timer.hasElapsed(2.0)) {
-        m_climber.fixedClimberAngled();
-        m_timer.stop();
-        m_timer.reset();
-      }
-      SmartDashboard.putString("status", "Phase 1");
-      if (m_climber.areArmsOnTarget()) {
-        SmartDashboard.putString("status", "Phase 1 - On Target");
-        m_climbPhase = 2;
-      }
-      break;
-
-    case 2:
-      //Continue Retracting AdjArms to Minimum length and Move FixArms to Vertical position
-      m_timer.start();
       m_climber.adjustArmsMagically(ClimberConstants.kClimbingRetractedPostion);
       if (m_timer.hasElapsed(1.0)) {
-        m_climber.fixedClimberVertical();
-        m_timer.stop();
-        m_timer.reset();
-      }
-      SmartDashboard.putString("status", "Phase 2");
-      if (m_climber.areArmsOnTarget()) {
-        SmartDashboard.putString("status", "Phase 2 - On Target");
-        m_climbPhase = 3;
+        m_climber.fixedClimberAngled();
+        if (m_climber.areArmsOnTarget()) {
+          m_climbPhase = 3;
+          m_timer.stop();
+          m_timer.reset();
+          m_climber.fixedClimberVertical();
+        }
       }
       break;
 
     case 3:
+      // Drop down so the fixed hooks can get under the bar  
+      m_climber.adjustArmsMagically(ClimberConstants.kFixedArmsFree);
+      if (m_climber.areArmsOnTarget()) {
+        m_climbPhase = 4;
+      }
+      break;
+
+    case 4:
+      // Pull up again  
+      m_climber.adjustArmsMagically(ClimberConstants.kClimbingRetractedPostion);
+      if (m_climber.areArmsOnTarget()) {
+        m_climbPhase = 5;
+      }
+      break;
+
+    case 5:
       // Extend arms above the bar so the fixed hooks settle onto bar  
       m_climber.adjustArmsMagically(ClimberConstants.kExtendedAboveBar);
-      SmartDashboard.putString("status", "Phase 3");
       if (m_climber.areArmsOnTarget()) {
-        SmartDashboard.putString("status", "Phase 3 - Finished");
         m_climbPhase = 0;  // Finished
       }
-    break;
+      break;
 
     default:
       SmartDashboard.putString("status", "Phase ???");

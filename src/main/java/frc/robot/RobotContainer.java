@@ -13,20 +13,16 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Autonomous.TwoBallAuto;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Control.XBoxControllerDPad;
+//import frc.robot.Control.XBoxControllerDPad;
 import frc.robot.Control.XBoxControllerButton;
 import frc.robot.Control.XBoxControllerEE;
 import frc.robot.Feedback.Cameras.Limelight;
 import frc.robot.subsystems.Climber.A0_CalibrateClimber;
 import frc.robot.subsystems.Climber.A1_PrepareToClimb;
-import frc.robot.subsystems.Climber.A2_LiftToBar;
-import frc.robot.subsystems.Climber.A3_ReachToNextBar;
-import frc.robot.subsystems.Climber.A4_HookToNextBar;
+import frc.robot.subsystems.Climber.A9_DoItAll;
 import frc.robot.subsystems.Climber.ClimberSubsystem;
-import frc.robot.subsystems.Climber.MagicClimbByDash;
-import frc.robot.subsystems.Climber.MagicClimbByStick;
 import frc.robot.subsystems.Climber.ManualClimbByStick;
-import frc.robot.subsystems.Drive.BearSwerveHelper;
+//import frc.robot.subsystems.Drive.BearSwerveHelper;
 import frc.robot.subsystems.Drive.DriveSubsystem;
 import frc.robot.subsystems.Drive.SwerveDrive;
 import frc.robot.subsystems.Intake.DriveIntake;
@@ -39,7 +35,7 @@ import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Tower.DriveTower;
 import frc.robot.subsystems.Tower.TowerSubsystem;
 
-import frc.swervelib.SwerveDrivetrainModel;
+//import frc.swervelib.SwerveDrivetrainModel;
 import frc.swervelib.SwerveSubsystem;
 
 /**
@@ -51,7 +47,7 @@ import frc.swervelib.SwerveSubsystem;
 
 public class RobotContainer {
 
-  private static SwerveDrivetrainModel dt;
+ // private static SwerveDrivetrainModel dt;
   private static SwerveSubsystem m_swerveSubsystem;
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
@@ -101,22 +97,15 @@ public class RobotContainer {
     m_towerSubsystem.setDefaultCommand(new DriveTower(m_towerSubsystem,  
                                       () -> -m_operatorController.getLeftY()));
 
-    m_climberSubsystem.setDefaultCommand(new ManualClimbByStick(m_climberSubsystem, 
-                                        () -> m_operatorController.getRightY()));
-
     // Make the Climb Sequence commands available on SmartDash
     SmartDashboard.putData(new A0_CalibrateClimber(m_climberSubsystem));
-    SmartDashboard.putData(new A1_PrepareToClimb(m_climberSubsystem /*, m_intakeSubsystem */));
-    SmartDashboard.putData(new A2_LiftToBar(m_climberSubsystem));
-    SmartDashboard.putData(new A3_ReachToNextBar(m_climberSubsystem));
-    SmartDashboard.putData(new A4_HookToNextBar(m_climberSubsystem));
-    
-    // Arm Driving Commands
+    SmartDashboard.putData(new A1_PrepareToClimb(m_climberSubsystem));
+    SmartDashboard.putData(new A9_DoItAll(m_climberSubsystem));
+        
+    // Climber Arm Driving Command
+    // Leave this here in case it's needed for manual control
+    // It will need to be activated from the Dashboard.
     SmartDashboard.putData(new ManualClimbByStick(m_climberSubsystem, () -> (-1.0)*m_operatorController.getRightY()));
-    SmartDashboard.putData(new MagicClimbByStick(m_climberSubsystem, () -> (-1.0)*m_operatorController.getRightY()));
-    SmartDashboard.putData(new MagicClimbByDash(m_climberSubsystem));
-
-    SmartDashboard.putData(new InstantCommand(m_climberSubsystem::zeroSensors, m_climberSubsystem));
 
   }
 
@@ -155,10 +144,7 @@ public class RobotContainer {
     new XBoxControllerButton(m_operatorController, XBoxControllerEE.Button.kRightBumper)
       .whileActiveContinuous(new InstantCommand(m_shooterSubystem::retractHood, m_shooterSubystem));
 
-    new XBoxControllerButton(m_operatorController, XBoxControllerEE.Button.kA)
-      .whenPressed(new InstantCommand(m_climberSubsystem::zeroSensors));
-        
-    new XBoxControllerDPad(m_operatorController, XBoxControllerEE.DPad.kDPadUp)
+/*    new XBoxControllerDPad(m_operatorController, XBoxControllerEE.DPad.kDPadUp)
      .whileActiveContinuous(new InstantCommand(m_climberSubsystem::fixedClimberVertical));
     
     new XBoxControllerDPad(m_operatorController, XBoxControllerEE.DPad.kDPadDown)
@@ -169,6 +155,7 @@ public class RobotContainer {
     
     new XBoxControllerDPad(m_operatorController, XBoxControllerEE.DPad.kDPadRight)
       .whileActiveContinuous(new InstantCommand(m_climberSubsystem::extendingClimberVertical));
+ */
   }
 
   /**

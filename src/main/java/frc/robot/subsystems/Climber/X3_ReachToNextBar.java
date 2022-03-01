@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ClimberConstants;
 
-public class A2_LiftToBar extends CommandBase {
+public class X3_ReachToNextBar extends CommandBase {
 
   ClimberSubsystem m_climber;
   int m_climbPhase = 1;
   Timer m_timer = new Timer();
 
-  public A2_LiftToBar(ClimberSubsystem climber) {
+  public X3_ReachToNextBar(ClimberSubsystem climber) {
     m_climber = climber;
     addRequirements(m_climber);
   }
@@ -28,16 +28,14 @@ public class A2_LiftToBar extends CommandBase {
 
   @Override
   public void execute() {
-    
+
     switch (m_climbPhase) {
       case 1:
-        // Adjustable Arms to Vertical
-        m_climber.extendingClimberVertical();
+        // Adjustable Arms to Angle
+        m_climber.extendingClimberAngled();
 
         m_timer.start();
-        SmartDashboard.putString("status", "Phase 1");
-        if (m_timer.hasElapsed(5.0)) {
-          SmartDashboard.putString("status", "Phase 1 - Complete");
+        if (m_timer.hasElapsed(1.0)) {
           m_climbPhase = 2;
           m_timer.stop();
           m_timer.reset();
@@ -45,29 +43,31 @@ public class A2_LiftToBar extends CommandBase {
         break;
 
       case 2:
-        // Retract Arms to Minimum Length
-        m_climber.adjustArmsMagically(ClimberConstants.kClimbingRetractedPostion);
-        SmartDashboard.putString("status", "Phase 2");
+        // Extend AdjArms to Maximum length
+        m_climber.adjustArmsMagically(ClimberConstants.kFullExtendedPosition);
+
         if (m_climber.areArmsOnTarget()) {
-          SmartDashboard.putString("status", "Phase 2 - On Target");
           m_climbPhase = 3;
         }
         break;
 
       case 3:
-        // Extend arms above the bar so the fixed hooks settle onto bar  
-        m_climber.adjustArmsMagically(ClimberConstants.kExtendedAboveBar);
-        SmartDashboard.putString("status", "Phase 3");
-        if (m_climber.areArmsOnTarget()) {
-          SmartDashboard.putString("status", "Phase 3 - Finished");
-          m_climbPhase = 0;  // Finished
+        // Move AdjArms to Vertical position so they rest against next bar
+        m_climber.extendingClimberVertical();
+
+        m_timer.start();
+        if (m_timer.hasElapsed(1.0)) {
+          m_climbPhase = 0;// Finished
+          m_timer.stop();
+          m_timer.reset();
         }
-      break;
+        break;
 
       default:
         SmartDashboard.putString("status", "Phase ???");
         break;
     } 
+  
   }
 
   @Override
@@ -79,4 +79,5 @@ public class A2_LiftToBar extends CommandBase {
   public boolean isFinished() {
     return (m_climbPhase == 0);
   }
+
 }
