@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems.Climber;
 
-import com.ctre.phoenix.ParamEnum;
+//import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
@@ -15,7 +15,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.sim.PhysicsSim;
@@ -174,7 +174,7 @@ public class TwinTalonFXMech {
 		TalonFX talon = (left ? m_leftFollower : m_rightMaster);
 
 		current = talon.getStatorCurrent();
-		//SmartDashboard.putNumber("Calib Curr " + (left ? "L: " : "R: "), current);
+		// SmartDashboard.putNumber("Calib Curr " + (left ? "L: " : "R: "), current);
 		if (current < ClimberConstants.kCalibCurrentLimit) {
 			talon.set(ControlMode.PercentOutput, -0.10);
 			isFinished = false;
@@ -234,26 +234,26 @@ public class TwinTalonFXMech {
 	public void reportMotionToDashboard() {
 
 		if (m_debugging && ++m_debug_counter > 10) {
-			SmartDashboard.putString("Arms ControlMode", getTalonControlMode());
-	    	SmartDashboard.putNumber("Right Arm Position", m_rightMaster.getSelectedSensorPosition(0));
-	    	SmartDashboard.putNumber("Left Arm Position", m_leftFollower.getSelectedSensorPosition(0));
-			SmartDashboard.putNumber("Arms MotorOutputPercent", m_rightMaster.getMotorOutputPercent());
-			SmartDashboard.putNumber("Right Arm Draw", m_rightMaster.getStatorCurrent());
-			SmartDashboard.putNumber("Left Arm Draw", m_leftFollower.getStatorCurrent());
+			// SmartDashboard.putString("Arms ControlMode", getTalonControlMode());
+	    	// SmartDashboard.putNumber("Right Arm Position", m_rightMaster.getSelectedSensorPosition(0));
+	    	// SmartDashboard.putNumber("Left Arm Position", m_leftFollower.getSelectedSensorPosition(0));
+			// SmartDashboard.putNumber("Arms MotorOutputPercent", m_rightMaster.getMotorOutputPercent());
+			// SmartDashboard.putNumber("Right Arm Draw", m_rightMaster.getStatorCurrent());
+			// SmartDashboard.putNumber("Left Arm Draw", m_leftFollower.getStatorCurrent());
 	    	
 			if (m_rightMaster.getControlMode() == ControlMode.MotionMagic) {
-				SmartDashboard.putNumber("Arms Traj. Position", m_rightMaster.getActiveTrajectoryPosition());
-				SmartDashboard.putNumber("Arms ClosedLoopTarget", m_rightMaster.getClosedLoopTarget(0));
-				SmartDashboard.putNumber("Arms ClosedLoopError", m_rightMaster.getClosedLoopError(0));
+				// SmartDashboard.putNumber("Arms Traj. Position", m_rightMaster.getActiveTrajectoryPosition());
+				// SmartDashboard.putNumber("Arms ClosedLoopTarget", m_rightMaster.getClosedLoopTarget(0));
+				// SmartDashboard.putNumber("Arms ClosedLoopError", m_rightMaster.getClosedLoopError(0));
 			}
 
-			SmartDashboard.putNumber("P", getP());
-			SmartDashboard.putNumber("I", getI());
-			SmartDashboard.putNumber("D", getD());
-			SmartDashboard.putNumber("F", getF());
-			SmartDashboard.putNumber("Setpoint", getSetpoint());
-			SmartDashboard.putNumber("Accel", getMMAccel());
-			SmartDashboard.putNumber("Cruise", getMMCruise());
+			// SmartDashboard.putNumber("P", getP());
+			// SmartDashboard.putNumber("I", getI());
+			// SmartDashboard.putNumber("D", getD());
+			// SmartDashboard.putNumber("F", getF());
+			// SmartDashboard.putNumber("Setpoint", getSetpoint());
+			// SmartDashboard.putNumber("Accel", getMMAccel());
+			// SmartDashboard.putNumber("Cruise", getMMCruise());
 	  
 			m_debug_counter = 0;
 		}
@@ -300,25 +300,25 @@ public class TwinTalonFXMech {
     }
 
 	//private void setSetpoint(double sp)  { m_setpoint = sp; }
-	private double getSetpoint()  { return m_setpoint; }
+	// private double getSetpoint()  { return m_setpoint; }
     
-	//private void setP(double p)  {m_rightMaster.selectProfileSlot(0, 0); m_rightMaster.config_kP(0, p); m_leftFollower.selectProfileSlot(0, 0); m_leftFollower.config_kP(0, p);}
-	private double getP()  { return m_rightMaster.configGetParameter(ParamEnum.eProfileParamSlot_P, 0); }
+	// //private void setP(double p)  {m_rightMaster.selectProfileSlot(0, 0); m_rightMaster.config_kP(0, p); m_leftFollower.selectProfileSlot(0, 0); m_leftFollower.config_kP(0, p);}
+	// private double getP()  { return m_rightMaster.configGetParameter(ParamEnum.eProfileParamSlot_P, 0); }
 
-	//private void setI(double i)  {m_rightMaster.selectProfileSlot(0, 0); m_rightMaster.config_kI(0, i);  m_leftFollower.selectProfileSlot(0, 0); m_leftFollower.config_kI(0, i);}
-	private double getI()  { return m_rightMaster.configGetParameter(ParamEnum.eProfileParamSlot_I, 0); }
+	// //private void setI(double i)  {m_rightMaster.selectProfileSlot(0, 0); m_rightMaster.config_kI(0, i);  m_leftFollower.selectProfileSlot(0, 0); m_leftFollower.config_kI(0, i);}
+	// private double getI()  { return m_rightMaster.configGetParameter(ParamEnum.eProfileParamSlot_I, 0); }
 
-	//private void setD(double d)  {m_rightMaster.selectProfileSlot(0, 0); m_rightMaster.config_kD(0, d);  m_leftFollower.selectProfileSlot(0, 0); m_leftFollower.config_kD(0, d);}
-	private double getD()  { return m_rightMaster.configGetParameter(ParamEnum.eProfileParamSlot_D, 0); }
+	// //private void setD(double d)  {m_rightMaster.selectProfileSlot(0, 0); m_rightMaster.config_kD(0, d);  m_leftFollower.selectProfileSlot(0, 0); m_leftFollower.config_kD(0, d);}
+	// private double getD()  { return m_rightMaster.configGetParameter(ParamEnum.eProfileParamSlot_D, 0); }
 
-	//private void setF(double f)  {m_rightMaster.selectProfileSlot(0, 0); m_rightMaster.config_kF(0, f, 0);  m_leftFollower.selectProfileSlot(0, 0); m_leftFollower.config_kF(0, f);}
-	private double getF()  { return m_rightMaster.configGetParameter(ParamEnum.eProfileParamSlot_F, 0, 0); }
+	// //private void setF(double f)  {m_rightMaster.selectProfileSlot(0, 0); m_rightMaster.config_kF(0, f, 0);  m_leftFollower.selectProfileSlot(0, 0); m_leftFollower.config_kF(0, f);}
+	// private double getF()  { return m_rightMaster.configGetParameter(ParamEnum.eProfileParamSlot_F, 0, 0); }
 
-	//private void setMMAccel(double acc)  {m_rightMaster.selectProfileSlot(0, 0); m_rightMaster.configMotionAcceleration(acc);  m_leftFollower.selectProfileSlot(0, 0); m_leftFollower.configMotionAcceleration(acc);}
-	private double getMMAccel()  { return m_rightMaster.configGetParameter(ParamEnum.eMotMag_Accel, 0, 0); }
+	// //private void setMMAccel(double acc)  {m_rightMaster.selectProfileSlot(0, 0); m_rightMaster.configMotionAcceleration(acc);  m_leftFollower.selectProfileSlot(0, 0); m_leftFollower.configMotionAcceleration(acc);}
+	// private double getMMAccel()  { return m_rightMaster.configGetParameter(ParamEnum.eMotMag_Accel, 0, 0); }
 
-	//private void setMMCruise(double cru)  {m_rightMaster.selectProfileSlot(0, 0); m_rightMaster.configMotionCruiseVelocity(cru);  m_leftFollower.selectProfileSlot(0, 0); m_leftFollower.configMotionCruiseVelocity(cru);}
-	private double getMMCruise()  { return m_rightMaster.configGetParameter(ParamEnum.eMotMag_VelCruise, 0, 0); }
+	// //private void setMMCruise(double cru)  {m_rightMaster.selectProfileSlot(0, 0); m_rightMaster.configMotionCruiseVelocity(cru);  m_leftFollower.selectProfileSlot(0, 0); m_leftFollower.configMotionCruiseVelocity(cru);}
+	// private double getMMCruise()  { return m_rightMaster.configGetParameter(ParamEnum.eMotMag_VelCruise, 0, 0); }
 
 /*
 	@Override
